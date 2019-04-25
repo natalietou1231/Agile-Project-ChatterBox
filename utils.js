@@ -7,7 +7,7 @@ module.exports.getDb = function(){
 };
 
 module.exports.init = function(callback){
-    const uri = 'mongodb+srv://Heroku:3wayHandsh%40ke@cluster0-ht3vg.mongodb.net/test?retryWrites=true';
+    const uri = 'mongodb+srv://admin:112233444@cluster0-om2ow.mongodb.net/test?retryWrites=true';
     const client = new MongoClient(uri, { useNewUrlParser: true });
     client.connect(err => {
         if (err){
