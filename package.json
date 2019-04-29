@@ -1,5 +1,5 @@
 {
-  "name": "chatlantis",
+  "name": "chatterbox",
   "version": "1.0.0",
   "description": "chat room server",
   "main": "server.js",
@@ -26,6 +26,7 @@
     "express-session": "^1.16.1",
     "hbs": "^4.0.4",
     "mongodb": "^3.2.3",
+    "mongoose": "^5.5.4",
     "passport": "^0.4.0",
     "socket.io": "^2.2.0"
   },
