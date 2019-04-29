@@ -1,5 +1,5 @@
 {
-  "name": "chatlantis",
+  "name": "chatterbox",
   "version": "1.0.0",
   "description": "chat room server",
   "main": "server.js",
@@ -11,20 +11,22 @@
     "type": "git",
     "url": "git+https://github.com/ElephantOfKnowledge/Node.git"
   },
-  "author": "Liam Lyford, Natalie Tou, Olivia Pangkiey",
+  "author": "Natalie Tou, Olivia Pangkiey, Matthew Lam, Jose Villanueva",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/ElephantOfKnowledge/Node/issues"
   },
   "homepage": "https://github.com/ElephantOfKnowledge/Node#readme",
   "dependencies": {
+    "bcrypt-node": "^0.1.0",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.18.3",
     "cookie-parser": "^1.4.4",
     "express": "^4.16.4",
-    "express-session": "^1.15.6",
-    "hbs": "^4.0.3",
+    "express-session": "^1.16.1",
+    "hbs": "^4.0.4",
     "mongodb": "^3.2.3",
+    "mongoose": "^5.5.4",
     "passport": "^0.4.0",
     "socket.io": "^2.2.0"
   },
