@@ -202,15 +202,31 @@ app.get('/chatroom', (req, res)=> {
     }
 });
 app.get('/account',(req,res)=>{
-    console.log(req.session.user)
+    // console.log(req.session.user)
     res.render('account.hbs',{
         title: 'Chatlantis',
         link: ['/chatroom','/logout'],
         username: `${req.session.user[0].username}`,
         email: `${req.session.user[0].email}`,
-        name: `${req.session.user[0].username}`
+        name: `${req.session.user[0].username}`,
+        updateLink:['/account/update']
     })
 })
+app.get('/account/update',(req,res)=>{
+    res.render('update.hbs', {
+        title: 'Update Account',
+        h1: 'Update Account',
+        box1: 'username',
+        box2: 'first_name',
+        box3: 'last_name',
+        box4: 'password',
+        box5: 'email',
+        link: '/account',
+        isError: 'false',
+        error: ''
+    });
+})
+app.put('/')
 
 var chatLog = [];
 const MAXLOGS = 100;
