@@ -196,11 +196,18 @@ app.get('/chatroom', (req, res)=> {
         res.render('chat.hbs', {
             title: 'Chatlantis',
             page: 'Log out',
-            link: '/logout',
+            link: ['/logout','/account'],
             username: `${req.session.user[0].username}`
         });
     }
 });
+app.get('/account',(req,res)=>{
+    res.render('account.hbs',{
+        title: 'Chatlantis',
+        link: ['/chatroom','/logout'],
+        username: `${req.session.user[0].username}`
+    })
+})
 
 var chatLog = [];
 const MAXLOGS = 100;
