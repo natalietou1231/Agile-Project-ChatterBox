@@ -202,10 +202,13 @@ app.get('/chatroom', (req, res)=> {
     }
 });
 app.get('/account',(req,res)=>{
+    console.log(req.session.user)
     res.render('account.hbs',{
         title: 'Chatlantis',
         link: ['/chatroom','/logout'],
-        username: `${req.session.user[0].username}`
+        username: `${req.session.user[0].username}`,
+        email: `${req.session.user[0].email}`,
+        name: `${req.session.user[0].username}`
     })
 })
 
