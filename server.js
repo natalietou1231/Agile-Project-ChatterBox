@@ -3,6 +3,7 @@
 // const logger = require('morgan');
 // const passport = require('passport');
 const express = require('express');
+const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const session = require('express-session');
@@ -12,6 +13,7 @@ const port = process.env.PORT || 8080;
 
 var utils = require('./utils');
 var msgs = require('./messages');
+var User = require('./model');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
@@ -33,6 +35,8 @@ app.use(session({
 hbs.registerHelper('getCurrentYear', ()=>{
     return today.getFullYear();
 });
+
+
 
 app.get('/', (req, res)=>{
     res.render('index.hbs', {
@@ -68,22 +72,21 @@ app.get('/login/incorrect', (req, res)=> {
     });
 });
 
-app.post('/login-form', (req, res)=> {
+
+
+app.post('/login', (req, res)=> {
     var username = req.body.username;
     var password = req.body.password;
 
-    var db = utils.getDb();
-
-    db.collection('users').find({username:req.body.username}).toArray(function(err,user){
+    mongoose.model('users').find({username:username}, (err,user)=>{
         if (err){
             res.send('Unable to find user.');
         }
         if (user.length == 0){
             res.redirect('/login/incorrect');
+
         }else{
-            // console.log(typeof password);
-            // console.log(user[0].hash);
-            if (bcrypt.compareSync(password, user[0].hash)){
+            if (bcrypt.compareSync(password, user[0].password)){
                 req.session.user = user;
                 res.redirect('/chatroom');
             }else{
@@ -126,31 +129,23 @@ app.get('/signup/exists', (req, res)=> {
     });
 });
 
-app.post('/signup-form', (req, res)=> {
-    //res.send(req.body);
-    var username = req.body.username;
-    var password = req.body.password;
-    var first_name = req.body.first_name;
-    var last_name = req.body.last_name;
-    //var hash = bcrypt.hashSync(req.body.password);
-    var email = req.body.email;
 
-    var db = utils.getDb();
+app.post('/signup', (req, res)=> {
+    var user = new User ({
+        username: req.body.username,
+        password: bcrypt.hashSync(req.body.password),
+        first_name: req.body.first_name,
+        last_name: req.body.last_name,
+        email: req.body.email,
+        registration_date: today
+    });
 
-    db.collection('users').find({$or:[{username:username},{email:email}]}).toArray(function(err,doc){
+    mongoose.model('users').find({$or:[{username:req.body.username},{email:req.body.email}]},(err,doc)=>{
         if (err){
             res.send('Unable to add user.');
         }
         if (doc.length === 0){
-            db.collection('users').insertOne({
-                username: username,
-                //password: password,
-                hash: bcrypt.hashSync(password),
-                first_name: first_name,
-                last_name: last_name,
-                email: email,
-                registration_date: today
-            });
+            user.save();
             // res.send(req.body);
             res.redirect('/login');
         }else{
@@ -158,6 +153,7 @@ app.post('/signup-form', (req, res)=> {
         }
 
     });
+
 });
 
 app.get('/logout', (req, res)=> {
@@ -169,9 +165,14 @@ app.get('/logout', (req, res)=> {
     res.redirect("/");
 });
 
+app.get('/aaa', (req, res)=>{
+    mongoose.model('users').find({},(err,users)=>{
+        res.send(users);
+    });
+});
+
 app.get('/profile/:username', function(req, res) {
-    var db = utils.getDb();
-    db.collection('users').find({username: req.params.username}).toArray(function(err,user){
+    mongoose.model('users').find({username: req.params.username},(err,user)=>{
         if (err){
             res.send('User does not exist.');
         }else{
@@ -207,12 +208,12 @@ var logMessage = (user, msg) => {
     newLog = {
         user: user,
         msg: msg
-    }
+    };
     chatLog.push(newLog);
     if (chatLog.length >= MAXLOGS) {
         chatLog.shift()
     }
-}
+};
 
 var chat = io.of('/chatroom');
 chat.on('connection', (socket) => {
@@ -228,7 +229,7 @@ chat.on('connection', (socket) => {
         if (!socket.hasName && socket.isClient) {
             socket.username = user;
             socket.colour = colour;
-            socket.hasName = true
+            socket.hasName = true;
             for (i = 0; i < chatLog.length; i++){
                 socket.emit('chat message', chatLog[i].msg, chatLog[i].user);
             }
