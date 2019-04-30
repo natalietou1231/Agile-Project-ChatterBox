@@ -208,7 +208,7 @@ app.get('/account',(req,res)=>{
         link: ['/chatroom','/logout'],
         username: `${req.session.user[0].username}`,
         email: `${req.session.user[0].email}`,
-        name: `${req.session.user[0].username}`,
+        name: `${req.session.user[0].first_name + req.session.user[0].last_name} `,
         updateLink:['/account/update']
     })
 })
@@ -221,12 +221,50 @@ app.get('/account/update',(req,res)=>{
         box3: 'last_name',
         box4: 'password',
         box5: 'email',
+        username: `${req.session.user[0].username}`,
+        email: `${req.session.user[0].email}`,
+        first_name: `${req.session.user[0].first_name}`,
+        last_name: `${req.session.user[0].last_name}`,
         link: '/account',
         isError: 'false',
         error: ''
     });
 })
-app.put('/')
+app.post('/account/update-form', (req, res)=>{
+    var user = new User ({
+        username: req.body.username,
+        password: bcrypt.hashSync(req.body.password),
+        first_name: req.body.first_name,
+        last_name: req.body.last_name,
+        email: req.body.email,
+        registration_date: today
+    });
+    var first_name = req.body.first_name;
+    var last_name = req.body.last_name;
+    var email = req.body.email;
+    var password = bcrypt.hashSync(req.body.password);
+    var username = req.body.username
+    // console.log(req.session.user[0]._id);
+    // console.log(_id);
+    mongoose.model('users').updateOne({_id: req.session.user[0]._id}, {
+        $set:{
+            username: username,
+            password: password,
+            first_name: first_name,
+            last_name: last_name,
+            email: email,
+            registration_date: today
+        }
+    }, (err, doc)=>{
+        if(err){
+            res.send(err)
+        }else if(doc.length === 1){
+            user.save();
+            res.redirect('/account');
+        }
+    })
+
+})
 
 var chatLog = [];
 const MAXLOGS = 100;
