@@ -29,7 +29,7 @@ app.use(cookieParser());
 app.use(session({
     secret: 'thesecret',
     saveUninitialized: false,
-    resave: false
+    resave: true
 }));
 
 hbs.registerHelper('getCurrentYear', ()=>{
@@ -237,13 +237,13 @@ app.post('/account/update-form', (req, res)=>{
         first_name: req.body.first_name,
         last_name: req.body.last_name,
         email: req.body.email,
-        registration_date: today
+        registration_date: req.session.user[0].registration_date
     });
     var first_name = req.body.first_name;
     var last_name = req.body.last_name;
     var email = req.body.email;
     var password = bcrypt.hashSync(req.body.password);
-    var username = req.body.username
+    var username = req.body.username;
     // console.log(req.session.user[0]._id);
     // console.log(_id);
     mongoose.model('users').updateOne({_id: req.session.user[0]._id}, {
@@ -253,14 +253,27 @@ app.post('/account/update-form', (req, res)=>{
             first_name: first_name,
             last_name: last_name,
             email: email,
-            registration_date: today
+            registration_date: req.session.user[0].registration_date
         }
     }, (err, doc)=>{
-        if(err){
+        //console.log(doc)
+        if(err) {
             res.send(err)
-        }else if(doc.length === 1){
-            user.save();
+        //}else if (doc){
+        }else if(doc.nModified === 1){
+            console.log('Updated!');
+            req.session.user[0] = user;
             res.redirect('/account');
+
+            // req.session.touch((err)=>{
+            //     console.log(req.session.user[0].username);
+            //     res.redirect('/account');
+            // });
+            // console.log(req.session.user[0].username);
+            //user.save();
+            // res.redirect('/account');
+
+
         }
     })
 
