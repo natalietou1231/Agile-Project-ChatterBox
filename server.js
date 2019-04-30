@@ -261,11 +261,14 @@ app.post('/account/update-form', (req, res)=>{
             res.send(err)
         //}else if (doc){
         }else if(doc.nModified === 1){
-            // console.log('aaaaa');
-            req.session.touch((err)=>{
-                console.log(req.session.user[0].username);
-                res.redirect('/account');
-            });
+            console.log('Updated!');
+            req.session.user[0] = user;
+            res.redirect('/account');
+
+            // req.session.touch((err)=>{
+            //     console.log(req.session.user[0].username);
+            //     res.redirect('/account');
+            // });
             // console.log(req.session.user[0].username);
             //user.save();
             // res.redirect('/account');
