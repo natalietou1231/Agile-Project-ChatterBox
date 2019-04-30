@@ -29,7 +29,7 @@ app.use(cookieParser());
 app.use(session({
     secret: 'thesecret',
     saveUninitialized: false,
-    resave: false
+    resave: true
 }));
 
 hbs.registerHelper('getCurrentYear', ()=>{
@@ -202,11 +202,81 @@ app.get('/chatroom', (req, res)=> {
     }
 });
 app.get('/account',(req,res)=>{
+    // console.log(req.session.user)
     res.render('account.hbs',{
         title: 'Chatlantis',
         link: ['/chatroom','/logout'],
-        username: `${req.session.user[0].username}`
+        username: `${req.session.user[0].username}`,
+        email: `${req.session.user[0].email}`,
+        name: `${req.session.user[0].first_name + req.session.user[0].last_name} `,
+        updateLink:['/account/update']
     })
+})
+app.get('/account/update',(req,res)=>{
+    res.render('update.hbs', {
+        title: 'Update Account',
+        h1: 'Update Account',
+        box1: 'username',
+        box2: 'first_name',
+        box3: 'last_name',
+        box4: 'password',
+        box5: 'email',
+        username: `${req.session.user[0].username}`,
+        email: `${req.session.user[0].email}`,
+        first_name: `${req.session.user[0].first_name}`,
+        last_name: `${req.session.user[0].last_name}`,
+        link: '/account',
+        isError: 'false',
+        error: ''
+    });
+})
+app.post('/account/update-form', (req, res)=>{
+    var user = new User ({
+        username: req.body.username,
+        password: bcrypt.hashSync(req.body.password),
+        first_name: req.body.first_name,
+        last_name: req.body.last_name,
+        email: req.body.email,
+        registration_date: req.session.user[0].registration_date
+    });
+    var first_name = req.body.first_name;
+    var last_name = req.body.last_name;
+    var email = req.body.email;
+    var password = bcrypt.hashSync(req.body.password);
+    var username = req.body.username;
+    // console.log(req.session.user[0]._id);
+    // console.log(_id);
+    mongoose.model('users').updateOne({_id: req.session.user[0]._id}, {
+        $set:{
+            username: username,
+            password: password,
+            first_name: first_name,
+            last_name: last_name,
+            email: email,
+            registration_date: req.session.user[0].registration_date
+        }
+    }, (err, doc)=>{
+        //console.log(doc)
+        if(err) {
+            res.send(err)
+        //}else if (doc){
+        }else if(doc.nModified === 1){
+            console.log('Updated!');
+            req.session.user[0] = user;
+            res.redirect('/account');
+
+            // req.session.touch((err)=>{
+            //     console.log(req.session.user[0].username);
+            //     res.redirect('/account');
+            // });
+            // console.log(req.session.user[0].username);
+            //user.save();
+            // res.redirect('/account');
+
+
+        }
+    })
+
 })
 
 var chatLog = [];
