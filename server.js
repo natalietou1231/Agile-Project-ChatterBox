@@ -201,16 +201,17 @@ app.get('/chatroom', (req, res)=> {
         });
     }
 });
-app.get('/account',(req,res)=>{
+app.get('/account',(req,res)=> {
     // console.log(req.session.user)
-    res.render('account.hbs',{
+    res.render('account.hbs', {
         title: 'Chatlantis',
-        link: ['/chatroom','/logout'],
+        link: ['/chatroom', '/logout'],
         username: `${req.session.user[0].username}`,
         email: `${req.session.user[0].email}`,
         name: `${req.session.user[0].first_name + req.session.user[0].last_name} `,
-        updateLink:['/account/update']
+        updateLink: ['/account/update']
 
+    })
 });
 
 app.get('/account/update',(req,res)=>{
@@ -297,24 +298,24 @@ app.post('/account/update-form', (req, res)=>{
         }
 
     });
-    // mongoose.model('users').updateOne({_id: req.session.user[0]._id}, {
-    //     $set:{
-    //         username: username,
-    //         password: password,
-    //         first_name: first_name,
-    //         last_name: last_name,
-    //         email: email,
-    //         registration_date: req.session.user[0].registration_date
-    //     }
-    // }, (err, doc)=>{
-    //     if(err) {
-    //         res.send(err)
-    //     }else if(doc.nModified === 1){
-    //         req.session.user[0] = user;
-    //         res.redirect('/account');
-    //
-    //     }
-    // })
+    mongoose.model('users').updateOne({_id: req.session.user[0]._id}, {
+        $set:{
+            username: username,
+            password: password,
+            first_name: first_name,
+            last_name: last_name,
+            email: email,
+            registration_date: req.session.user[0].registration_date
+        }
+    }, (err, doc)=>{
+        if(err) {
+            res.send(err)
+        }else if(doc.nModified === 1){
+            req.session.user[0] = user;
+            res.redirect('/account');
+
+        }
+    })
 
 });
 
