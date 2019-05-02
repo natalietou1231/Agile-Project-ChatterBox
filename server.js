@@ -201,17 +201,21 @@ app.get('/chatroom', (req, res)=> {
         });
     }
 });
-app.get('/account',(req,res)=>{
+app.get('/account',(req,res)=> {
     // console.log(req.session.user)
+
     res.render('account.hbs',{
         title: 'ChatterBox',
         link: ['/chatroom','/logout'],
+
         username: `${req.session.user[0].username}`,
         email: `${req.session.user[0].email}`,
         name: `${req.session.user[0].first_name + req.session.user[0].last_name} `,
-        updateLink:['/account/update']
+        updateLink: ['/account/update']
+
     })
-})
+});
+
 app.get('/account/update',(req,res)=>{
     res.render('update.hbs', {
         title: 'Update Account',
@@ -229,7 +233,29 @@ app.get('/account/update',(req,res)=>{
         isError: 'false',
         error: ''
     });
-})
+
+});
+
+app.get('/account/update/exists', (req, res)=> {
+    res.render('update.hbs', {
+        title: 'Update Account',
+        h1: 'Update Account',
+        box1: 'username',
+        box2: 'first_name',
+        box3: 'last_name',
+        box4: 'password',
+        box5: 'email',
+        username: `${req.session.user[0].username}`,
+        email: `${req.session.user[0].email}`,
+        first_name: `${req.session.user[0].first_name}`,
+        last_name: `${req.session.user[0].last_name}`,
+        link: '/account',
+        isError: 'true',
+        error: 'User already exists.'
+    });
+});
+
+
 app.post('/account/update-form', (req, res)=>{
     var user = new User ({
         username: req.body.username,
@@ -244,8 +270,36 @@ app.post('/account/update-form', (req, res)=>{
     var email = req.body.email;
     var password = bcrypt.hashSync(req.body.password);
     var username = req.body.username;
-    // console.log(req.session.user[0]._id);
-    // console.log(_id);
+
+
+    mongoose.model('users').find({$or:[{username:req.body.username},{email:req.body.email}]},(err,doc)=>{
+        if (err){
+            res.send('Unable to add user.');
+        }
+        if (doc.length < 2){
+            mongoose.model('users').updateOne({_id: req.session.user[0]._id}, {
+                $set:{
+                    username: username,
+                    password: password,
+                    first_name: first_name,
+                    last_name: last_name,
+                    email: email,
+                    registration_date: req.session.user[0].registration_date
+                }
+            }, (err, doc)=>{
+                if(err) {
+                    res.send(err)
+                }else if(doc.nModified === 1){
+                    req.session.user[0] = user;
+                    res.redirect('/account');
+
+                }
+            })
+        }else{
+            res.redirect('/account/update/exists');
+        }
+
+    });
     mongoose.model('users').updateOne({_id: req.session.user[0]._id}, {
         $set:{
             username: username,
@@ -256,28 +310,17 @@ app.post('/account/update-form', (req, res)=>{
             registration_date: req.session.user[0].registration_date
         }
     }, (err, doc)=>{
-        //console.log(doc)
         if(err) {
             res.send(err)
-        //}else if (doc){
         }else if(doc.nModified === 1){
-            console.log('Updated!');
             req.session.user[0] = user;
             res.redirect('/account');
-
-            // req.session.touch((err)=>{
-            //     console.log(req.session.user[0].username);
-            //     res.redirect('/account');
-            // });
-            // console.log(req.session.user[0].username);
-            //user.save();
-            // res.redirect('/account');
-
 
         }
     })
 
-})
+});
+
 
 var chatLog = [];
 const MAXLOGS = 100;
