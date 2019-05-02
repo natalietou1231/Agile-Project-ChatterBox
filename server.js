@@ -210,8 +210,9 @@ app.get('/account',(req,res)=>{
         email: `${req.session.user[0].email}`,
         name: `${req.session.user[0].first_name + req.session.user[0].last_name} `,
         updateLink:['/account/update']
-    })
+
 });
+
 app.get('/account/update',(req,res)=>{
     res.render('update.hbs', {
         title: 'Update Account',
@@ -229,6 +230,7 @@ app.get('/account/update',(req,res)=>{
         isError: 'false',
         error: ''
     });
+
 });
 
 app.get('/account/update/exists', (req, res)=> {
@@ -250,6 +252,7 @@ app.get('/account/update/exists', (req, res)=> {
     });
 });
 
+
 app.post('/account/update-form', (req, res)=>{
     var user = new User ({
         username: req.body.username,
@@ -264,6 +267,7 @@ app.post('/account/update-form', (req, res)=>{
     var email = req.body.email;
     var password = bcrypt.hashSync(req.body.password);
     var username = req.body.username;
+
 
     mongoose.model('users').find({$or:[{username:req.body.username},{email:req.body.email}]},(err,doc)=>{
         if (err){
@@ -313,6 +317,7 @@ app.post('/account/update-form', (req, res)=>{
     // })
 
 });
+
 
 var chatLog = [];
 const MAXLOGS = 100;
