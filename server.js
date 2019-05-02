@@ -194,22 +194,25 @@ app.get('/chatroom', (req, res)=> {
     }else{
         clients.push(req.session.user[0].username);
         res.render('chat.hbs', {
-            title: 'Chatlantis',
+            title: 'ChatterBox',
             page: 'Log out',
             link: ['/logout','/account'],
             username: `${req.session.user[0].username}`
         });
     }
 });
-app.get('/account',(req,res)=>{
+app.get('/account',(req,res)=> {
     // console.log(req.session.user)
+
     res.render('account.hbs',{
-        title: 'Chatlantis',
+        title: 'ChatterBox',
         link: ['/chatroom','/logout'],
+
         username: `${req.session.user[0].username}`,
         email: `${req.session.user[0].email}`,
         name: `${req.session.user[0].first_name + req.session.user[0].last_name} `,
         updateLink:['/account/update']
+
     })
 });
 app.get('/account/update',(req,res)=>{
@@ -295,24 +298,24 @@ app.post('/account/update-form', (req, res)=>{
         }
 
     });
-    // mongoose.model('users').updateOne({_id: req.session.user[0]._id}, {
-    //     $set:{
-    //         username: username,
-    //         password: password,
-    //         first_name: first_name,
-    //         last_name: last_name,
-    //         email: email,
-    //         registration_date: req.session.user[0].registration_date
-    //     }
-    // }, (err, doc)=>{
-    //     if(err) {
-    //         res.send(err)
-    //     }else if(doc.nModified === 1){
-    //         req.session.user[0] = user;
-    //         res.redirect('/account');
-    //
-    //     }
-    // })
+    mongoose.model('users').updateOne({_id: req.session.user[0]._id}, {
+        $set:{
+            username: username,
+            password: password,
+            first_name: first_name,
+            last_name: last_name,
+            email: email,
+            registration_date: req.session.user[0].registration_date
+        }
+    }, (err, doc)=>{
+        if(err) {
+            res.send(err)
+        }else if(doc.nModified === 1){
+            req.session.user[0] = user;
+            res.redirect('/account');
+
+        }
+    })
 
 });
 
