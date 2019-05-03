@@ -211,11 +211,10 @@ app.get('/account',(req,res)=> {
         username: `${req.session.user[0].username}`,
         email: `${req.session.user[0].email}`,
         name: `${req.session.user[0].first_name + req.session.user[0].last_name} `,
-        updateLink: ['/account/update']
+        updateLink:['/account/update']
 
     })
 });
-
 app.get('/account/update',(req,res)=>{
     res.render('update.hbs', {
         title: 'Update Account',
@@ -233,7 +232,6 @@ app.get('/account/update',(req,res)=>{
         isError: 'false',
         error: ''
     });
-
 });
 
 app.get('/account/update/exists', (req, res)=> {
@@ -255,7 +253,6 @@ app.get('/account/update/exists', (req, res)=> {
     });
 });
 
-
 app.post('/account/update-form', (req, res)=>{
     var user = new User ({
         username: req.body.username,
@@ -270,7 +267,6 @@ app.post('/account/update-form', (req, res)=>{
     var email = req.body.email;
     var password = bcrypt.hashSync(req.body.password);
     var username = req.body.username;
-
 
     mongoose.model('users').find({$or:[{username:req.body.username},{email:req.body.email}]},(err,doc)=>{
         if (err){
@@ -289,8 +285,10 @@ app.post('/account/update-form', (req, res)=>{
             }, (err, doc)=>{
                 if(err) {
                     res.send(err)
-                }else if(doc.nModified === 1){
+                }else if(doc.ok===1){
+                    temp = req.session.user[0]._id;
                     req.session.user[0] = user;
+                    req.session.user[0]._id = temp;
                     res.redirect('/account');
 
                 }
@@ -300,27 +298,8 @@ app.post('/account/update-form', (req, res)=>{
         }
 
     });
-    mongoose.model('users').updateOne({_id: req.session.user[0]._id}, {
-        $set:{
-            username: username,
-            password: password,
-            first_name: first_name,
-            last_name: last_name,
-            email: email,
-            registration_date: req.session.user[0].registration_date
-        }
-    }, (err, doc)=>{
-        if(err) {
-            res.send(err)
-        }else if(doc.nModified === 1){
-            req.session.user[0] = user;
-            res.redirect('/account');
-
-        }
-    })
 
 });
-
 
 var chatLog = [];
 const MAXLOGS = 100;
@@ -388,3 +367,5 @@ http.listen(port, ()=>{
     console.log('Server is up on the port 8080');
     utils.init();
 });
+
+module.exports = app;

@@ -10,5 +10,4 @@ var userSchema = new Schema({
     registration_date: Date
 });
 
-
 module.exports = mongoose.model('users', userSchema);
