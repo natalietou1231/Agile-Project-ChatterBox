@@ -285,10 +285,10 @@ app.post('/account/update-form', (req, res)=>{
             }, (err, doc)=>{
                 if(err) {
                     res.send(err)
-                }else if(doc.nModified === 1){
-                    //console.log(reg.session.user[0].username);
+                }else if(doc.ok===1){
+                    temp = req.session.user[0]._id;
                     req.session.user[0] = user;
-                    //console.log(reg.session.user[0].username);
+                    req.session.user[0]._id = temp;
                     res.redirect('/account');
 
                 }
@@ -298,24 +298,6 @@ app.post('/account/update-form', (req, res)=>{
         }
 
     });
-    mongoose.model('users').updateOne({_id: req.session.user[0]._id}, {
-        $set:{
-            username: username,
-            password: password,
-            first_name: first_name,
-            last_name: last_name,
-            email: email,
-            registration_date: req.session.user[0].registration_date
-        }
-    }, (err, doc)=>{
-        if(err) {
-            res.send(err)
-        }else if(doc.nModified === 1){
-            req.session.user[0] = user;
-            res.redirect('/account');
-
-        }
-    })
 
 });
 
