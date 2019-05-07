@@ -101,16 +101,16 @@ passport.use(new LocalStrategy((username, password, done)=> {
         mongoose.model('users').find({
             username: username
         }, (err, user)=> {
+            //console.log(user);
             if (err) {
                 return done(err);
             }
 
-            if (!user) {
+            if (user.length == 0) {
                 return done(null, false);
             }
 
             if (bcrypt.compareSync(password, user[0].password)){
-                // console.log(user[0]);
                 return done(null, user[0]);
 
             }else{
@@ -157,10 +157,6 @@ passport.serializeUser((user, done)=> {
     //console.log(user);
     done(null, user._id);
 });
-
-// passport.deserializeUser((user, done)=> {
-//     done(null, user);
-// });
 
 passport.deserializeUser((id, done)=> {
     User.findById(id, (err, user)=> {
@@ -333,7 +329,7 @@ app.get('/account/update/exists', (req, res)=> {
     });
 });
 
-app.post('/account/upate-form', (req, res)=>{
+app.post('/account/update-form', (req, res)=>{
     var user = new User ({
         username: req.body.username,
         password: bcrypt.hashSync(req.body.password),
@@ -448,5 +444,7 @@ http.listen(port, ()=>{
     console.log('Server is up on the port 8080');
     utils.init();
 });
+
+
 
 module.exports = app;
