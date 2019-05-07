@@ -333,7 +333,7 @@ app.get('/account/update/exists', (req, res)=> {
     });
 });
 
-app.post('/account/update-form', (req, res)=>{
+app.post('/account/upate-form', (req, res)=>{
     var user = new User ({
         username: req.body.username,
         password: bcrypt.hashSync(req.body.password),
