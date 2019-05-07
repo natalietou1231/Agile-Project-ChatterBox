@@ -1786,10 +1786,11 @@
           <ul id="messages"></ul>
         </div>
         <div>
+
           <form id="f" action="" onsubmit='postMessage()'>
-            <input id="m"  autocomplete="off" maxlength="200" placeholder="Type something..." autofocus/><button>Send</button>
+            <input id="m"  autocomplete="off" maxlength="200" placeholder="Type something..." autofocus/>
           </form>
-            <div id="container9" style="width: 500px"></div>
+            <div id="container9" style="width: 1000px"></div>
         </div>
       </div>
     </div>
@@ -1800,13 +1801,13 @@
                 placeholder: "Type something...",
                 tones: false,
                 shortnames: true,
-                autocomplete: "off",
-                container: '#container9'
+                autocomplete: "off"
             });
         })
 
     </script>
   </body>
+
   {{> footer}}
   {{> chatScript}}
 </html>
