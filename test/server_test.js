@@ -16,7 +16,19 @@ describe("SAMPLE unit test",function(){
             .get("/")
             .end((err,res)=>{
                 should.exist(res.body);
+                console.log(res);
                 res.should.have.status(200);
+                done();
+            });
+    });
+    it("should not have access to chatroom", (done)=>{
+
+        chai.request("http://localhost:8080")
+            .post("/login")
+            .send({username: "op123", password:"Kucing07!"})
+            .end((err,res)=>{
+                // should.exist(res.body);
+                res.should.redirectTo("http://localhost:8080/login/incorrect");
                 done();
             });
     });
@@ -24,13 +36,14 @@ describe("SAMPLE unit test",function(){
 
         chai.request("http://localhost:8080")
             .post("/login")
-            .send({username: "opangkiey", password:"Kucing07!"})
+            .send({username: "op", password:"Kucing07!"})
             .end((err,res)=>{
                 should.exist(res.body);
                 res.should.redirectTo("http://localhost:8080/chatroom");
                 done();
             });
     });
+
 
     it("should sign up a user", (done)=>{
         let json ={};
@@ -55,7 +68,7 @@ describe("SAMPLE unit test",function(){
         chai.request("http://localhost:8080")
             .get("/chatroom")
             .end((err,res)=>{
-                should.exist(res.body);
+                // should.exist(res.body);
                 res.should.have.status(200);
                 done();
             });
@@ -107,56 +120,3 @@ describe("SAMPLE unit test",function(){
 
 });
 
-
-
-
-
-
-
-// chai.use(chaiHttp);
-// chai.should()
-// var agent = chai.request.agent(app);
-// describe("SAMPLE unit test",function(){
-//     it("should return home page", (done)=>{
-//         // chai.request(app)
-//         agent
-//             .get("/")
-//             .end((err,res)=>{
-//                 should.exist(res.body);
-//                 console.log(res.body);
-//                 expect(res).to.have.status(200);
-//                 done();
-//             });
-//     });
-// });
-//
-// // var agent = chai.request.agent(app);
-// describe("SAMPLE unit test",function(){
-//     it("should return login page", (done)=>{
-//         chai.request(app)
-//         // agent
-//             .get("/login")
-//             .end((err,res)=>{
-//                 should.exist(res.body);
-//                 res.should.have.status(200);
-//                 done();
-//             });
-//     });
-// });
-//
-
-//
-// var agent = chai.request.agent(app);
-// describe("SAMPLE unit test",function(done){
-//     it("should go to chatroom", ()=>{
-//         chai.request(app);
-//         agent
-//             .post("/login")
-//             .send({username: "opangkiey", password:"Kucing07!"})
-//             // .end((err,res)=>{
-//             //     should.exist(res.body);
-//             //     res.should.redirectTo("/chatroom");
-//             //     done();
-//             // });
-//     });
-// });
