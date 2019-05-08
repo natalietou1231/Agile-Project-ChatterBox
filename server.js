@@ -101,7 +101,6 @@ passport.use(new LocalStrategy((username, password, done)=> {
         mongoose.model('users').find({
             username: username
         }, (err, user)=> {
-            //console.log(user);
             if (err) {
                 return done(err);
             }
@@ -111,6 +110,7 @@ passport.use(new LocalStrategy((username, password, done)=> {
             }
 
             if (bcrypt.compareSync(password, user[0].password)){
+                // console.log(user[0]);
                 return done(null, user[0]);
 
             }else{
@@ -157,6 +157,10 @@ passport.serializeUser((user, done)=> {
     //console.log(user);
     done(null, user._id);
 });
+
+// passport.deserializeUser((user, done)=> {
+//     done(null, user);
+// });
 
 passport.deserializeUser((id, done)=> {
     User.findById(id, (err, user)=> {
