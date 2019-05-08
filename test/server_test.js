@@ -139,7 +139,7 @@ describe("SAMPLE unit test",function(){
             })
         // agent.close()
     });
-    
+
     it("should update profile", ()=>{
         agent
             .post("/login")
@@ -167,7 +167,23 @@ describe("SAMPLE unit test",function(){
             })
     });
 
+    it("should log out", ()=>{
+        agent
+            .post("/login")
+            .send({username: "www", password:"111111Rf"})
+            .then(()=>{
+                return agent.get('/logout')
+                    .then((err, res)=>{
+                        expect(res).to.have.status(200);
+                        expect(res).to.redirectTo("http://localhost:8080");
 
+                    });
+
+
+                    })
+
+
+            })
 
 });
 
