@@ -36,13 +36,14 @@ describe("SAMPLE unit test",function(){
 
         chai.request("http://localhost:8080")
             .post("/login")
-            .send({username: "op123", password:"Kucing07!"})
+            .send({username: "op12355", password:"Kucing07!"})
             .end((err,res)=>{
                 // should.exist(res.body);
                 res.should.redirectTo("http://localhost:8080/login/incorrect");
                 done();
             });
     });
+
     it("should login to chatroom", (done)=>{
 
         chai.request("http://localhost:8080")
@@ -55,6 +56,7 @@ describe("SAMPLE unit test",function(){
                 done();
             });
     });
+
     it("should not login to chatroom", (done)=>{
 
         chai.request("http://localhost:8080")
@@ -139,7 +141,7 @@ describe("SAMPLE unit test",function(){
     /* ---------------------------Deliverable 1 Tests----------------*/
 
     var agent = chai.request.agent("http://localhost:8080");
-    it("should get user account information", ()=>{
+    it("should get user account information", (done)=>{
         agent
             .post("/login")
             .send({_method:"post", username: "www", password:"111111Rf"})
@@ -156,7 +158,7 @@ describe("SAMPLE unit test",function(){
         // agent.close()
     });
 
-    it("should update profile", ()=>{
+    it("should update profile", (done)=>{
         agent
             .post("/login")
             .send({_method:"post", username: "www", password:"111111Rf"})
@@ -175,7 +177,7 @@ describe("SAMPLE unit test",function(){
                                 assert.equal(res.body.user[0].username,'www111');
                                 assert.equal(res.body.user[0].name,'OliviaOlivia');
                                 assert.equal(res.body.user[0].email,'2@eer');
-
+                                done()
 
                             });
 
@@ -185,19 +187,22 @@ describe("SAMPLE unit test",function(){
             })
     });
 
-    it("should log out", ()=>{
+    var agent = chai.request.agent("http://localhost:8080");
+    it("should log out", (done)=> {
         agent
             .post("/login")
-            .send({username: "www", password:"111111Rf"})
-            .then(()=>{
+            .send({_method: "post", username: "a", password: "a"})
+            .then(() => {
                 return agent.get('/logout')
-                    .then((err, res)=>{
-                        expect(res).to.have.status(200);
-                        expect(res).to.redirectTo("http://localhost:8080");
-
+                    .then((err, res) => {
+                        // expect(res).to.have.status(200);
+                        res.should.redirectTo("http://localhost:8080");
+                        done()
                     });
+            })
+    });
           
-    var agent = chai.request.agent("http://localhost:8080")
+    var agent = chai.request.agent("http://localhost:8080");
     it("should NOT update profile", (done)=>{
         agent
             .post("/login")
@@ -215,23 +220,18 @@ describe("SAMPLE unit test",function(){
                         return agent.get('/account')
                             .then(function (res) {
                                 expect(res).to.have.status(200);
-                                done()
+                                // done()
                             });
-
                     })
-
-
             })
     });
+
+
+
+
 
 
 });
       
 
-                    })
-
-
-            })
-
-});
 
