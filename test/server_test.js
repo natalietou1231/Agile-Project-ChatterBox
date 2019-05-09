@@ -48,9 +48,21 @@ describe("SAMPLE unit test",function(){
         chai.request("http://localhost:8080")
             .post("/login")
             .send({username: "www", password:"111111Rf"})
+
             .end((err,res)=>{
                 should.exist(res.body);
                 res.should.redirectTo("http://localhost:8080/chatroom");
+                done();
+            });
+    });
+    it("should not login to chatroom", (done)=>{
+
+        chai.request("http://localhost:8080")
+            .post("/login")
+            .send({username: "rawr", password:"Kucing07!"})
+            .end((err,res)=>{
+                should.exist(res.body);
+                res.should.redirectTo("http://localhost:8080/login/incorrect");
                 done();
             });
     });
@@ -125,16 +137,20 @@ describe("SAMPLE unit test",function(){
             });
     });
     /* ---------------------------Deliverable 1 Tests----------------*/
+
     var agent = chai.request.agent("http://localhost:8080");
     it("should get user account information", ()=>{
         agent
             .post("/login")
-            .send({username: "www", password:"111111Rf"})
+            .send({_method:"post", username: "www", password:"111111Rf"})
+
+
             .then(function(){
                 // res.should.have.cookie('sessionid');
                 return agent.get('/account')
                     .then(function (res) {
                         expect(res).to.have.status(200);
+                        done();
                     });
             })
         // agent.close()
@@ -143,10 +159,11 @@ describe("SAMPLE unit test",function(){
     it("should update profile", ()=>{
         agent
             .post("/login")
-            .send({username: "www", password:"111111Rf"})
+            .send({_method:"post", username: "www", password:"111111Rf"})
             .then(function(){
                 return agent.post('/account/update-form')
                     .send({last_name:"Olivia",
+
                         first_name:"Olivia",
                         username:"www111",
                         password:"111111Rf",
@@ -158,6 +175,7 @@ describe("SAMPLE unit test",function(){
                                 assert.equal(res.body.user[0].username,'www111');
                                 assert.equal(res.body.user[0].name,'OliviaOlivia');
                                 assert.equal(res.body.user[0].email,'2@eer');
+
 
                             });
 
@@ -178,7 +196,37 @@ describe("SAMPLE unit test",function(){
                         expect(res).to.redirectTo("http://localhost:8080");
 
                     });
+          
+    var agent = chai.request.agent("http://localhost:8080")
+    it("should NOT update profile", (done)=>{
+        agent
+            .post("/login")
+            .send({_method:"post", username: "chowzler", password:"Asdf1234"})
+            .then(function(res){
+                return agent.get('/account/update')
+                    .send({
+                        _method:"post",
+                        last_name:"Olivia",
+                        first_name:"Olivia",
+                        username:"chowzler",
+                        password:"Asdf1234",
+                        email: "a@gmail.com"})
+                    .then(function(){
+                        return agent.get('/account')
+                            .then(function (res) {
+                                expect(res).to.have.status(200);
+                                done()
+                            });
 
+                    })
+
+
+            })
+    });
+
+
+});
+      
 
                     })
 
