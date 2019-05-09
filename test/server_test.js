@@ -3,6 +3,14 @@ const expect = require('chai').expect;
 const assert = require('chai').assert;
 const chaiHttp = require('chai-http');
 const should = chai.should();
+var   io = require('socket.io-client')
+    , ioOptions = {
+    transports: ['websocket']
+    , forceNew: true
+    , reconnection: false
+}
+    , testMsg = 'HelloWorld'
+
 // const app = require('../server');
 // const request = require("supertest");
 
@@ -37,7 +45,7 @@ describe("SAMPLE unit test",function(){
         chai.request("http://localhost:8080")
             .post("/login")
             .send({username: "op", password:"Kucing07!"})
-            .send({username: "chowzler", password:"Asdf1234"})
+            // .send({username: "chowzler", password:"Asdf1234"})
             .end((err,res)=>{
                 should.exist(res.body);
                 res.should.redirectTo("http://localhost:8080/chatroom");
@@ -91,7 +99,7 @@ describe("SAMPLE unit test",function(){
         agent
             .post("/login")
             .send({username: "op", password:"Kucing07!"})
-            .send({_method:"post", username: "chowzler", password:"Asdf1234"})
+            // .send({_method:"post", username: "chowzler", password:"Asdf1234"})
             .then(function(){
                 // res.should.have.cookie('sessionid');
                 return agent.get('/account')
@@ -168,6 +176,7 @@ describe("SAMPLE unit test",function(){
 
             })
     });
+    /* ---------------------------Deliverable 2 Tests----------------*/
 
 
 
