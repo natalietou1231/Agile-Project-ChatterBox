@@ -104,8 +104,6 @@ passport.use(new LocalStrategy((username, password, done)=> {
             if (err) {
                 return done(err);
             }
-
-            if (user.length==0) {
             if (user.length == 0) {
                 return done(null, false);
             }
