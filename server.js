@@ -106,6 +106,7 @@ passport.use(new LocalStrategy((username, password, done)=> {
             }
 
             if (user.length==0) {
+            if (user.length == 0) {
                 return done(null, false);
             }
 
@@ -333,7 +334,7 @@ app.get('/account/update/exists', (req, res)=> {
     });
 });
 
-app.post('/account/upate-form', (req, res)=>{
+app.post('/account/update-form', (req, res)=>{
     var user = new User ({
         username: req.body.username,
         password: bcrypt.hashSync(req.body.password),
