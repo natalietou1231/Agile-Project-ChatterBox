@@ -1,6 +1,3 @@
-// const path = require('path');
-// const favicon = require('serve-favicon');
-// const logger = require('morgan');
 const passport = require('passport');
 const express = require('express');
 const mongoose = require('mongoose');
@@ -9,19 +6,18 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const hbs = require('hbs');
 const bcrypt = require('bcrypt-nodejs');
-const LocalStrategy = require('passport-local').Strategy;
-var FacebookStrategy = require('passport-facebook').Strategy;
+
 const port = process.env.PORT || 8080;
 
 var utils = require('./utils');
 var msgs = require('./messages');
 var User = require('./model');
-var auth = require('./auth');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var today = new Date();
 var clients = [];
+require('./passport')(passport);
 
 // hbs
 app.set('view engine', 'hbs');
@@ -92,75 +88,11 @@ app.get('/login/incorrect', (req, res)=> {
     });
 });
 
-passport.use('local', new LocalStrategy((username, password, done)=> {
-        mongoose.model('users').find({
-            'local.username': username
-        }, (err, user)=> {
-            //console.log(user[0].local);
-            if (err) {
-                return done(err);
-            }
-
-            if (user.length == 0) {
-                return done(null, false);
-            }
-
-            if (bcrypt.compareSync(password, user[0].local.password)){
-                // console.log(user[0]);
-                return done(null, user[0]);
-
-            }else{
-                return done(null, false);
-            }
-        });
-    }
-));
-
 app.post('/login', (req, res, next)=> {
     passport.authenticate('local', {
         successRedirect: '/chatroom',
         failureRedirect: '/login/incorrect',
     })(req, res, next);
-});
-
-// app.post('/login', (req, res)=> {
-//     var username = req.body.username;
-//     var password = req.body.password;
-//
-//     mongoose.model('users').find({username:username}, (err,user)=>{
-//         if (err){
-//             res.send('Unable to find user.');
-//         }
-//         if (user.length == 0){
-//             res.redirect('/login/incorrect');
-//
-//         }else{
-//             if (bcrypt.compareSync(password, user[0].password)){
-//                 req.session.user = user;
-//                 res.redirect('/chatroom');
-//             }else{
-//                 res.redirect('/login/incorrect');
-//             }
-//
-//         }
-//
-//     });
-//
-// });
-
-passport.serializeUser((user, done)=> {
-    //console.log(user);
-    done(null, user._id);
-});
-
-// passport.deserializeUser((user, done)=> {
-//     done(null, user);
-// });
-
-passport.deserializeUser((id, done)=> {
-    User.findById(id, (err, user)=> {
-        done(err, user);
-    });
 });
 
 
@@ -263,7 +195,6 @@ app.get('/profile/:username', function(req, res) {
 });
 
 app.get('/chatroom', ensureAuthenticated,(req, res)=> {
-        //console.log(req.user);
         clients.push(req.user.local.username);
         res.render('chat.hbs', {
             title: 'ChatterBox',
@@ -273,22 +204,8 @@ app.get('/chatroom', ensureAuthenticated,(req, res)=> {
         });
 });
 
-// app.get('/chatroom', ensureAuthenticated,(req, res)=> {
-//     if (!req.session.user){
-//         res.redirect('/login')
-//     }else{
-//         clients.push(req.session.user[0].username);
-//         res.render('chat.hbs', {
-//             title: 'ChatterBox',
-//             page: 'Log out',
-//             link: ['/logout','/account'],
-//             username: `${req.session.user[0].username}`
-//         });
-//     }
-// });
-app.get('/account',(req,res)=> {
-    // console.log(req.session.user)
 
+app.get('/account',(req,res)=> {
     res.render('account.hbs',{
         title: 'ChatterBox',
         link: ['/chatroom','/logout'],
