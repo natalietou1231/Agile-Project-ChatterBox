@@ -88,7 +88,6 @@ app.get('/login/incorrect', (req, res)=> {
     });
 });
 
-<<<<<<< HEAD
 passport.use(new LocalStrategy((username, password, done)=> {
         mongoose.model('users').find({
             username: username
@@ -111,8 +110,6 @@ passport.use(new LocalStrategy((username, password, done)=> {
     }
 ));
 
-=======
->>>>>>> master
 app.post('/login', (req, res, next)=> {
     passport.authenticate('local', {
         successRedirect: '/chatroom',

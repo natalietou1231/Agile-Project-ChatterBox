@@ -22,7 +22,6 @@ describe("SAMPLE unit test",function(){
             done();
         });
     });
-<<<<<<< HEAD
 
     it("should return home page", (done)=>{
         chai.request("http://localhost:8080")
@@ -224,7 +223,6 @@ describe("SAMPLE unit test",function(){
 
                         })
                 });
-=======
     //
     // it("should return home page", (done)=>{
     //     chai.request("http://localhost:8080")
@@ -427,7 +425,6 @@ describe("SAMPLE unit test",function(){
 //                     })
 //             })
 //     });
->>>>>>> master
 
 
             })
