@@ -32,17 +32,17 @@ describe("SAMPLE unit test",function(){
     //             done();
     //         });
     // });
-    it("should not have access to chatroom", (done)=>{
-
-        chai.request("http://localhost:8080")
-            .post("/login")
-            .send({username: "op12355", password:"Kucing07!"})
-            .end((err,res)=>{
-                // should.exist(res.body);
-                res.should.redirectTo("http://localhost:8080/login/incorrect");
-                done();
-            });
-    });
+    // it("should not have access to chatroom", (done)=>{
+    //
+    //     chai.request("http://localhost:8080")
+    //         .post("/login")
+    //         .send({username: "op12355", password:"Kucing07!"})
+    //         .end((err,res)=>{
+    //             // should.exist(res.body);
+    //             res.should.redirectTo("http://localhost:8080/login/incorrect");
+    //             done();
+    //         });
+    // });
 
     // it("should login to chatroom", (done)=>{
     //
