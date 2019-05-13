@@ -17,6 +17,7 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var today = new Date();
 var clients = [];
+
 require('./passport')(passport);
 
 // hbs
@@ -60,7 +61,8 @@ app.get('/', (req, res)=>{
         h1: 'Welcome .....',
         link1: 'Sign up',
         link2: 'Log in',
-        pages: ['/signup', '/login']
+        link3: 'Facebook',
+        pages: ['/signup', '/login', '/auth/facebook']
     });
 });
 
@@ -118,12 +120,12 @@ app.post('/login', (req, res, next)=> {
 });
 
 
-// app.get('/auth/facebook', passport.authenticate('facebook', {scope: ['email']}));
-//
-// app.get('/auth/facebook/callback',
-//     passport.authenticate('facebook', {
-//         successRedirect: '/chatroom',
-//         failureRedirect: '/' }));
+app.get('/auth/facebook', passport.authenticate('facebook', {scope: ['email']}));
+
+app.get('/auth/facebook/callback',
+    passport.authenticate('facebook', {
+        successRedirect: '/chatroom',
+        failureRedirect: '/' }));
 
 app.get('/signup', (req, res)=> {
     res.render('signup.hbs', {
