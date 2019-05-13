@@ -158,7 +158,7 @@ describe("SAMPLE unit test",function(){
         // agent.close()
     });
 
-    it("should update profile", (done)=>{
+    it("should update profile", ()=>{
         agent
             .post("/login")
             .send({_method:"post", username: "www", password:"111111Rf"})
@@ -177,7 +177,7 @@ describe("SAMPLE unit test",function(){
                                 assert.equal(res.body.user[0].username,'www111');
                                 assert.equal(res.body.user[0].name,'OliviaOlivia');
                                 assert.equal(res.body.user[0].email,'2@eer');
-                                done()
+
 
                             });
 
@@ -186,9 +186,9 @@ describe("SAMPLE unit test",function(){
 
             })
     });
-
+//
     var agent = chai.request.agent("http://localhost:8080");
-    it("should log out", (done)=> {
+    it("should log out", ()=> {
         agent
             .post("/login")
             .send({_method: "post", username: "a", password: "a"})
@@ -197,13 +197,13 @@ describe("SAMPLE unit test",function(){
                     .then((err, res) => {
                         // expect(res).to.have.status(200);
                         res.should.redirectTo("http://localhost:8080");
-                        done()
+
                     });
             })
     });
-          
+//
     var agent = chai.request.agent("http://localhost:8080");
-    it("should NOT update profile", (done)=>{
+    it("should NOT update profile", ()=>{
         agent
             .post("/login")
             .send({_method:"post", username: "chowzler", password:"Asdf1234"})
@@ -220,12 +220,10 @@ describe("SAMPLE unit test",function(){
                         return agent.get('/account')
                             .then(function (res) {
                                 expect(res).to.have.status(200);
-                                // done()
                             });
                     })
             })
     });
-
 
 
 
