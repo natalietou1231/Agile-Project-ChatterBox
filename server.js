@@ -1,6 +1,3 @@
-// const path = require('path');
-// const favicon = require('serve-favicon');
-// const logger = require('morgan');
 const passport = require('passport');
 const express = require('express');
 const mongoose = require('mongoose');
@@ -9,7 +6,7 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const hbs = require('hbs');
 const bcrypt = require('bcrypt-nodejs');
-const LocalStrategy = require('passport-local').Strategy;
+
 const port = process.env.PORT || 8080;
 
 var utils = require('./utils');
@@ -20,6 +17,7 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var today = new Date();
 var clients = [];
+require('./passport')(passport);
 
 // hbs
 app.set('view engine', 'hbs');
@@ -56,13 +54,6 @@ var ensureAuthenticated =(req, res, next)=>{
 
 };
 
-// app.use((req,res,next)=>{
-//    console.log(req.user);
-//    console.log(req.session.user);
-//    next();
-// });
-
-
 app.get('/', (req, res)=>{
     res.render('index.hbs', {
         title: 'Home page',
@@ -97,6 +88,7 @@ app.get('/login/incorrect', (req, res)=> {
     });
 });
 
+<<<<<<< HEAD
 passport.use(new LocalStrategy((username, password, done)=> {
         mongoose.model('users').find({
             username: username
@@ -119,6 +111,8 @@ passport.use(new LocalStrategy((username, password, done)=> {
     }
 ));
 
+=======
+>>>>>>> master
 app.post('/login', (req, res, next)=> {
     passport.authenticate('local', {
         successRedirect: '/chatroom',
@@ -127,46 +121,12 @@ app.post('/login', (req, res, next)=> {
 });
 
 
-// app.post('/login', (req, res)=> {
-//     var username = req.body.username;
-//     var password = req.body.password;
+// app.get('/auth/facebook', passport.authenticate('facebook', {scope: ['email']}));
 //
-//     mongoose.model('users').find({username:username}, (err,user)=>{
-//         if (err){
-//             res.send('Unable to find user.');
-//         }
-//         if (user.length == 0){
-//             res.redirect('/login/incorrect');
-//
-//         }else{
-//             if (bcrypt.compareSync(password, user[0].password)){
-//                 req.session.user = user;
-//                 res.redirect('/chatroom');
-//             }else{
-//                 res.redirect('/login/incorrect');
-//             }
-//
-//         }
-//
-//     });
-//
-// });
-
-passport.serializeUser((user, done)=> {
-    //console.log(user);
-    done(null, user._id);
-});
-
-// passport.deserializeUser((user, done)=> {
-//     done(null, user);
-// });
-
-passport.deserializeUser((id, done)=> {
-    User.findById(id, (err, user)=> {
-        done(err, user);
-    });
-});
-
+// app.get('/auth/facebook/callback',
+//     passport.authenticate('facebook', {
+//         successRedirect: '/chatroom',
+//         failureRedirect: '/' }));
 
 app.get('/signup', (req, res)=> {
     res.render('signup.hbs', {
@@ -201,15 +161,17 @@ app.get('/signup/exists', (req, res)=> {
 
 app.post('/signup', (req, res)=> {
     var user = new User ({
-        username: req.body.username,
-        password: bcrypt.hashSync(req.body.password),
-        first_name: req.body.first_name,
-        last_name: req.body.last_name,
-        email: req.body.email,
-        registration_date: today
+        local:{
+            username: req.body.username,
+            password: bcrypt.hashSync(req.body.password),
+            first_name: req.body.first_name,
+            last_name: req.body.last_name,
+            email: req.body.email,
+            registration_date: today
+        }
     });
 
-    mongoose.model('users').find({$or:[{username:req.body.username},{email:req.body.email}]},(err,doc)=>{
+    mongoose.model('users').find({$or:[{'local.username':req.body.username},{'local.email':req.body.email}]},(err,doc)=>{
         if (err){
             res.send('Unable to add user.');
         }
@@ -226,7 +188,7 @@ app.post('/signup', (req, res)=> {
 });
 
 app.get('/logout', (req, res)=> {
-    var index = clients.indexOf(req.user.username);
+    var index = clients.indexOf(req.user.local.username);
     if (index > -1) {
        clients.splice(index, 1);
     }
@@ -241,15 +203,15 @@ app.get('/logout', (req, res)=> {
 // });
 
 app.get('/profile/:username', function(req, res) {
-    mongoose.model('users').find({username: req.params.username},(err,user)=>{
+    mongoose.model('users').find({'local.username': req.params.username},(err,user)=>{
         if (err){
             res.send('User does not exist.');
         }else{
             res.render('profile.hbs', {
                 title: 'Profile',
-                username: user[0].username,
-                name: user[0].first_name + " " + user[0].last_name,
-                email: user[0].email,
+                username: user[0].local.username,
+                name: user[0].local.first_name + " " + user[0].local.last_name,
+                email: user[0].local.email,
                 link:'/'
             });
         }
@@ -258,38 +220,24 @@ app.get('/profile/:username', function(req, res) {
 });
 
 app.get('/chatroom', ensureAuthenticated,(req, res)=> {
-        clients.push(req.user.username);
+        clients.push(req.user.local.username);
         res.render('chat.hbs', {
             title: 'ChatterBox',
             page: 'Log out',
             link: ['/logout','/account'],
-            username: `${req.user.username}`
+            username: `${req.user.local.username}`
         });
 });
 
-// app.get('/chatroom', ensureAuthenticated,(req, res)=> {
-//     if (!req.session.user){
-//         res.redirect('/login')
-//     }else{
-//         clients.push(req.session.user[0].username);
-//         res.render('chat.hbs', {
-//             title: 'ChatterBox',
-//             page: 'Log out',
-//             link: ['/logout','/account'],
-//             username: `${req.session.user[0].username}`
-//         });
-//     }
-// });
-app.get('/account',(req,res)=> {
-    // console.log(req.session.user)
 
+app.get('/account',(req,res)=> {
     res.render('account.hbs',{
         title: 'ChatterBox',
         link: ['/chatroom','/logout'],
 
-        username: `${req.user.username}`,
-        email: `${req.user.email}`,
-        name: `${req.user.first_name + req.user.last_name} `,
+        username: `${req.user.local.username}`,
+        email: `${req.user.local.email}`,
+        name: `${req.user.local.first_name + " " + req.user.local.last_name} `,
         updateLink:['/account/update']
 
     })
@@ -303,10 +251,10 @@ app.get('/account/update',(req,res)=>{
         box3: 'last_name',
         box4: 'password',
         box5: 'email',
-        username: `${req.user.username}`,
-        email: `${req.user.email}`,
-        first_name: `${req.user.first_name}`,
-        last_name: `${req.user.last_name}`,
+        username: `${req.user.local.username}`,
+        email: `${req.user.local.email}`,
+        first_name: `${req.user.local.first_name}`,
+        last_name: `${req.user.local.last_name}`,
         link: '/account',
         isError: 'false',
         error: ''
@@ -322,10 +270,10 @@ app.get('/account/update/exists', (req, res)=> {
         box3: 'last_name',
         box4: 'password',
         box5: 'email',
-        username: `${req.user.username}`,
-        email: `${req.user.email}`,
-        first_name: `${req.user.first_name}`,
-        last_name: `${req.user.last_name}`,
+        username: `${req.user.local.username}`,
+        email: `${req.user.local.email}`,
+        first_name: `${req.user.local.first_name}`,
+        last_name: `${req.user.local.last_name}`,
         link: '/account',
         isError: 'true',
         error: 'User already exists.'
@@ -334,12 +282,14 @@ app.get('/account/update/exists', (req, res)=> {
 
 app.post('/account/update-form', (req, res)=>{
     var user = new User ({
-        username: req.body.username,
-        password: bcrypt.hashSync(req.body.password),
-        first_name: req.body.first_name,
-        last_name: req.body.last_name,
-        email: req.body.email,
-        registration_date: req.user.registration_date
+        local:{
+            username: req.body.username,
+            password: bcrypt.hashSync(req.body.password),
+            first_name: req.body.first_name,
+            last_name: req.body.last_name,
+            email: req.body.email,
+            registration_date: req.user.local.registration_date
+        }
     });
     var first_name = req.body.first_name;
     var last_name = req.body.last_name;
@@ -347,19 +297,20 @@ app.post('/account/update-form', (req, res)=>{
     var password = bcrypt.hashSync(req.body.password);
     var username = req.body.username;
 
-    mongoose.model('users').find({$or:[{username:req.body.username},{email:req.body.email}]},(err,doc)=>{
+    mongoose.model('users').find({$or:[{'local.username':req.body.username},{'local.email':req.body.email}]},(err,doc)=>{
         if (err){
             res.send('Unable to add user.');
         }
         if (doc.length < 2){
             mongoose.model('users').updateOne({_id: req.user._id}, {
                 $set:{
-                    username: username,
-                    password: password,
-                    first_name: first_name,
-                    last_name: last_name,
-                    email: email,
-                    registration_date: req.user.registration_date
+                    'local.username': username,
+                    'local.password': password,
+                    'local.first_name': first_name,
+                    'local.last_name': last_name,
+                    'local.email': email,
+                    'local.registration_date': req.user.local.registration_date
+
                 }
             }, (err, doc)=>{
                 if(err) {
