@@ -90,28 +90,6 @@ app.get('/login/incorrect', (req, res)=> {
     });
 });
 
-passport.use(new LocalStrategy((username, password, done)=> {
-        mongoose.model('users').find({
-            username: username
-        }, (err, user)=> {
-            if (err) {
-                return done(err);
-            }
-            if (user.length == 0) {
-                return done(null, false);
-            }
-
-            if (bcrypt.compareSync(password, user[0].password)){
-                // console.log(user[0]);
-                return done(null, user[0]);
-
-            }else{
-                return done(null, false);
-            }
-        });
-    }
-));
-
 app.post('/login', (req, res, next)=> {
     passport.authenticate('local', {
         successRedirect: '/chatroom',
@@ -189,7 +167,7 @@ app.post('/signup', (req, res)=> {
 app.get('/logout', (req, res)=> {
     var index = clients.indexOf(req.user.local.username);
     if (index > -1) {
-       clients.splice(index, 1);
+        clients.splice(index, 1);
     }
     req.logout();
     res.redirect("/");
@@ -219,13 +197,13 @@ app.get('/profile/:username', function(req, res) {
 });
 
 app.get('/chatroom', ensureAuthenticated,(req, res)=> {
-        clients.push(req.user.local.username);
-        res.render('chat.hbs', {
-            title: 'ChatterBox',
-            page: 'Log out',
-            link: ['/logout','/account'],
-            username: `${req.user.local.username}`
-        });
+    clients.push(req.user.local.username);
+    res.render('chat.hbs', {
+        title: 'ChatterBox',
+        page: 'Log out',
+        link: ['/logout','/account'],
+        username: `${req.user.local.username}`
+    });
 });
 
 
