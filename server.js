@@ -98,7 +98,7 @@ app.post('/login', (req, res, next)=> {
 });
 
 
-app.get('/auth/facebook', passport.authenticate('facebook', {scope: ['email']}));
+app.get('/auth/facebook', passport.authenticate('facebook'));
 
 app.get('/auth/facebook/callback',
     passport.authenticate('facebook', {
@@ -204,6 +204,15 @@ app.get('/chatroom', ensureAuthenticated,(req, res)=> {
         link: ['/logout','/account'],
         username: `${req.user.local.username}`
     });
+        console.log(Object.keys(req.user));
+        clients.push(req.user.local.username);
+        res.render('chat.hbs', {
+            title: 'ChatterBox',
+            page: 'Log out',
+            link: ['/logout','/account'],
+            username: `${req.user.local.username}`
+        });
+
 });
 
 

@@ -10,7 +10,7 @@ var today = new Date();
 
 module.exports = (passport) =>{
     passport.serializeUser((user, done)=> {
-        console.log(user);
+        //console.log(user);
         done(null, user._id);
     });
 
@@ -47,7 +47,7 @@ module.exports = (passport) =>{
     passport.use('facebook', new FacebookStrategy({
             clientID: auth.facebookAuth.clientID,
             clientSecret: auth.facebookAuth.clientSecret,
-            callbackURL: auth.facebookAuth.callbackURL
+            callbackURL: auth.facebookAuth.callbackURL,
         },
         (accessToken, refreshToken, profile, done) =>{
             mongoose.model('users').find({'facebook.id': profile.id
@@ -55,26 +55,23 @@ module.exports = (passport) =>{
                 if(err){
                     return done(err);
                 }
-                if(user){
-                    return done(null, user);
-                } else {
-                    console.log('aaa');
+
+                if(user.length === 0) {
                     var newUser = new User({
                         facebook:{
                             id: profile.id,
                             token: accessToken,
-                            name: profile.name.givenName + ' ' + profile.name.familyName,
-                            email: profile.emails[0].value,
+                            name: profile.displayName,
                             registration_date: today
                         }
                     });
-                    console.log('bbb');
                     newUser.save((err)=>{
                         if(err)
                             throw err;
                         return done(null, newUser);
                     });
-                    //console.log(profile);
+                }else{
+                    return done(null, user[0]);
                 }
             });
         }
