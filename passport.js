@@ -61,7 +61,9 @@ module.exports = (passport) =>{
                         facebook:{
                             id: profile.id,
                             token: accessToken,
-                            name: profile.displayName,
+                            first_name: profile.displayName.split(" ")[0],
+                            last_name: profile.displayName.split(" ")[1],
+                            username: profile.displayName.split(' ').join('.'),
                             registration_date: today
                         }
                     });
