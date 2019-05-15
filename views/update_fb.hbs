@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{title}}</title>
+    {{> bootstrap}}
+    {{> Style}}
+    <script>
+        if ({{isError}}) {
+            alert("{{error}}")
+        }
+    </script>
+</head>
+<body class="background">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" style="font-family: 'Amatic SC', cursive; font-size: 25px; font-weight: bolder"><img src="http://buckscountyherald.com/clients/buckscountyherald/1-16-2019-2-11-17-PM-6960961.png" class="center2" alt="logo"></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse " id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto ">
+            <li class="nav-item ">
+                <a class="nav-link" href="{{link}}" role="button">Back</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+
+<form action="/account/update-form-fb" method="post" class="LogColor container-fluid col-md-12" style="margin-bottom: 80px">
+    <a class="font3" >Update Profile </a>
+    <hr style="border: black solid 1px">
+    <div class="container row">
+        <div class="form-group col-sm-6">
+            <label class="font2">Last Name: </label>
+            <input type="text" class="form-control" name="{{box3}}" id="{{box3}}" value="{{last_name}}" required/>
+        </div>
+        <div class="form-group col-sm-6">
+            <label class="font2">First Name: </label>
+            <input type="text" class="form-control" name="{{box2}}" id="{{box2}}" value="{{first_name}}" required/>
+        </div>
+    </div>
+    <div class="container row">
+        <div class="form-group col-6" >
+            <label class="font2">Username: </label>
+            <input type="text" class="form-control" name="{{box1}}" id="{{box1}}" value="{{username}}" required />
+        </div>
+    </div>
+    <div style="margin-left: 115px">
+        <button type="submit" class="btn btn-primary" value="sign up" style="margin: 22px">Submit</button>
+    </div>
+</form>
+
+</body>
+{{> footer}}
+</html>
