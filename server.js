@@ -164,20 +164,7 @@ app.post('/signup', (req, res)=> {
 
 });
 
-app.get('/logout', (req, res)=> {
-    if (req.user.local){
-        var username = req.user.local.username;
-    }
-    if (req.user.facebook){
-        var username = req.user.facebook.username;
-    }
-    var index = clients.indexOf(username);
-    if (index > -1) {
-       clients.splice(index, 1);
-    }
-    req.logout();
-    res.redirect("/");
-});
+
 
 // app.get('/aaa', (req, res)=>{
 //     mongoose.model('users').find({},(err,users)=>{
@@ -433,14 +420,33 @@ app.post('/account/update-form-fb', (req, res)=>{
 
 });
 
-app.get('/chatroom', ensureAuthenticated,(req, res)=> {
+app.get('/logout', (req, res)=> {
+    var username;
     if (req.user.local){
-        var username = req.user.local.username;
+        username = req.user.local.username;
     }else if (req.user.facebook){
-        var username = req.user.facebook.username;
+        username = req.user.facebook.username;
+    }
+   
+    var index = clients.indexOf(username);
+    if (index > -1) {
+        clients.splice(index, 1);
+    }
+    req.logout();
+    res.redirect("/");
+});
+
+app.get('/chatroom', ensureAuthenticated,(req, res)=> {
+    var username;
+    if (req.user.local.username){
+        username = req.user.local.username;
+        clients.push(username);
+    }
+    if (req.user.facebook.username){
+        username = req.user.facebook.username;
+        clients.push(username);
     }
 
-    clients.push(username);
     res.render('chat.hbs', {
         title: 'ChatterBox',
         page: 'Log out',
