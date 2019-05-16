@@ -49,7 +49,7 @@ describe("SAMPLE unit test",function(){
 
         chai.request("http://localhost:8080")
             .post("/login")
-            .send({username: "www", password:"111111Rf"})
+            .send({username: "OO", password:"Kucing07!"})
 
             .end((err,res)=>{
                 should.exist(res.body);
@@ -157,7 +157,7 @@ describe("SAMPLE unit test",function(){
         // agent.close()
     });
 
-    it("should update profile", ()=>{
+    it("should update profile", (done)=>{
         agent
             .post("/login")
             .send({_method:"post", username: "www", password:"111111Rf"})
@@ -176,7 +176,7 @@ describe("SAMPLE unit test",function(){
                                 assert.equal(res.body.user[0].username,'www111');
                                 assert.equal(res.body.user[0].name,'OliviaOlivia');
                                 assert.equal(res.body.user[0].email,'2@eer');
-
+                                done()
 
                             });
 
@@ -185,18 +185,20 @@ describe("SAMPLE unit test",function(){
 
             })
     });
-
-    it("should log out", ()=>{
+    var agent = chai.request.agent("http://localhost:8080")
+    it("should log out", (done)=> {
         agent
             .post("/login")
-            .send({username: "www", password:"111111Rf"})
-            .then(()=>{
+            .send({username: "OO", password: "Kucing07!"})
+            .then(() => {
                 return agent.get('/logout')
-                    .then((err, res)=>{
+                    .then((err, res) => {
                         expect(res).to.have.status(200);
                         expect(res).to.redirectTo("http://localhost:8080");
-
+                        done()
                     });
+            })
+    })
 
                 var agent = chai.request.agent("http://localhost:8080")
                 it("should NOT update profile", (done)=>{
@@ -337,9 +339,7 @@ describe("SAMPLE unit test",function(){
     it("should get user account information", (done)=>{
         agent
             .post("/login")
-            .send({_method:"post", username: "tester1", password:"Asdf1234"})
-
-
+            .send({'local.username': "OO", 'local.password':"Kucing07!"})
             .then(function(){
                 // res.should.have.cookie('sessionid');
                 return agent.get('/account')
@@ -420,14 +420,29 @@ describe("SAMPLE unit test",function(){
                     })
             })
     });
-
-
+    var agent = chai.request.agent("https://afternoon-mesa-87220.herokuapp.com/");
+    it("should be able to sign in with facebook", (done)=>{
+        agent
+            .post("/auth/facebook")
+            .send({_method:"post", email: "tester_nuqpmiv_one@tfbnw.net", password:"111111Rf"})
+            .then(function(){
+                // res.should.have.cookie('sessionid');
+                return agent.get('/chatroom')
+                    .then(function (res) {
+                        expect(res).to.have.status(200);
+                        done();
+                    });
             })
-
+    });
 
 
 })
-});
+
+
+
+
+
+
 
 
 
