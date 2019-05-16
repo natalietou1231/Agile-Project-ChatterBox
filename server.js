@@ -164,20 +164,7 @@ app.post('/signup', (req, res)=> {
 
 });
 
-app.get('/logout', (req, res)=> {
-    if (req.user.local){
-        var username = req.user.local.username;
-    }
-    if (req.user.facebook){
-        var username = req.user.facebook.username;
-    }
-    var index = clients.indexOf(username);
-    if (index > -1) {
-       clients.splice(index, 1);
-    }
-    req.logout();
-    res.redirect("/");
-});
+
 
 // app.get('/aaa', (req, res)=>{
 //     mongoose.model('users').find({},(err,users)=>{
@@ -220,12 +207,12 @@ app.get('/profile/:username', function(req, res) {
 
 
 app.get('/account',(req,res)=> {
-    if (req.user.local){
+    if (req.user.local.username){
         var username = req.user.local.username;
         var email = req.user.local.email;
         var name = req.user.local.first_name + " " + req.user.local.last_name;
         var updatelink = '/account/update'
-    }else if (req.user.facebook){
+    }else if (req.user.facebook.username){
         var username = req.user.facebook.username;
         var email = 'Not available';
         var name = req.user.facebook.first_name + " " + req.user.facebook.last_name;
@@ -433,14 +420,33 @@ app.post('/account/update-form-fb', (req, res)=>{
 
 });
 
-app.get('/chatroom', ensureAuthenticated,(req, res)=> {
+app.get('/logout', (req, res)=> {
+    var username;
     if (req.user.local){
-        var username = req.user.local.username;
+        username = req.user.local.username;
     }else if (req.user.facebook){
-        var username = req.user.facebook.username;
+        username = req.user.facebook.username;
     }
 
-    clients.push(username);
+    var index = clients.indexOf(username);
+    if (index > -1) {
+        clients.splice(index, 1);
+    }
+    req.logout();
+    res.redirect("/");
+});
+
+app.get('/chatroom', ensureAuthenticated,(req, res)=> {
+    var username;
+    if (req.user.local.username){
+        username = req.user.local.username;
+        clients.push(username);
+    }
+    if (req.user.facebook.username){
+        username = req.user.facebook.username;
+        clients.push(username);
+    }
+
     res.render('chat.hbs', {
         title: 'ChatterBox',
         page: 'Log out',
