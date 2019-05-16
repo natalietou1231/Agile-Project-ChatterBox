@@ -207,12 +207,12 @@ app.get('/profile/:username', function(req, res) {
 
 
 app.get('/account',(req,res)=> {
-    if (req.user.local){
+    if (req.user.local.username){
         var username = req.user.local.username;
         var email = req.user.local.email;
         var name = req.user.local.first_name + " " + req.user.local.last_name;
         var updatelink = '/account/update'
-    }else if (req.user.facebook){
+    }else if (req.user.facebook.username){
         var username = req.user.facebook.username;
         var email = 'Not available';
         var name = req.user.facebook.first_name + " " + req.user.facebook.last_name;
@@ -427,7 +427,7 @@ app.get('/logout', (req, res)=> {
     }else if (req.user.facebook){
         username = req.user.facebook.username;
     }
-   
+
     var index = clients.indexOf(username);
     if (index > -1) {
         clients.splice(index, 1);
