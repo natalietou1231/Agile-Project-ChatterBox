@@ -11,6 +11,7 @@
         }
 
     </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body class="background">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -38,7 +39,9 @@
 
 
         <form action="/login" method="post" class="LogColor container-fluid" style="margin-bottom: 80px">
+            <div class="text-center">
             <a class="font3" > L O G I N </a>
+            </div>
             <hr style="border: black solid 1px">
             <div class="form-group margin2" >
                 <label class="font2">Username: </label>
@@ -49,7 +52,15 @@
                 <label class="font2">Password: </label>
                 <input type="password" class="form-control" name="{{box2}}" id="{{box2}}" placeholder="Password" required/>
             </div>
-            <button type="submit" class="btn btn-primary" style="margin: 22px">Submit</button>
+            <div class="form-group margin2 text-center">
+                or
+            </div>
+            <div class="form-group margin2 text-center">
+                <a href="{{pages.[2]}}" role="button" class="btn btn-primary2">Sign in with Facebook</a>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary" style="margin: 22px">Submit</button>
+            </div>
         </form>
 
 </body>
