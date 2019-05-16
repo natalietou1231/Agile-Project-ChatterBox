@@ -306,7 +306,6 @@ app.post('/account/update-form', (req, res)=>{
                     req.user = user;
                     req.user._id = temp;
                     res.redirect('/account');
-
                 }
             })
         }else{
