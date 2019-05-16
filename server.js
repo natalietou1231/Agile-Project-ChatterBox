@@ -164,6 +164,7 @@ app.post('/signup', (req, res)=> {
 
 });
 
+<<<<<<< HEAD
 app.get('/logout', (req, res)=> {
     var index = clients.indexOf(req.user.local.username);
     if (index > -1) {
@@ -172,6 +173,9 @@ app.get('/logout', (req, res)=> {
     req.logout();
     res.redirect("/");
 });
+=======
+
+>>>>>>> master
 
 // app.get('/aaa', (req, res)=>{
 //     mongoose.model('users').find({},(err,users)=>{
@@ -181,8 +185,24 @@ app.get('/logout', (req, res)=> {
 
 app.get('/profile/:username', function(req, res) {
     mongoose.model('users').find({'local.username': req.params.username},(err,user)=>{
-        if (err){
+        if (err) {
             res.send('User does not exist.');
+        }
+        if (user.length ===0){
+            mongoose.model('users').find({'facebook.username': req.params.username},(err,user)=>{
+                if (err){
+                    res.send('User does not exist.');
+                }else{
+                    res.render('profile.hbs', {
+                        title: 'Profile',
+                        username: user[0].facebook.username,
+                        name: user[0].facebook.first_name + " " + user[0].facebook.last_name,
+                        email: 'Not available',
+                        link:'/'
+                    });
+                }
+
+            });
         }else{
             res.render('profile.hbs', {
                 title: 'Profile',
@@ -196,6 +216,7 @@ app.get('/profile/:username', function(req, res) {
     });
 });
 
+<<<<<<< HEAD
 app.get('/chatroom', ensureAuthenticated,(req, res)=> {
     clients.push(req.user.local.username);
     res.render('chat.hbs', {
@@ -215,20 +236,40 @@ app.get('/chatroom', ensureAuthenticated,(req, res)=> {
 
 });
 
+=======
+>>>>>>> master
 
 app.get('/account',(req,res)=> {
+    if (req.user.local.username){
+        var username = req.user.local.username;
+        var email = req.user.local.email;
+        var name = req.user.local.first_name + " " + req.user.local.last_name;
+        var updatelink = '/account/update'
+    }else if (req.user.facebook.username){
+        var username = req.user.facebook.username;
+        var email = 'Not available';
+        var name = req.user.facebook.first_name + " " + req.user.facebook.last_name;
+        var updatelink = '/account/fb_update'
+    }
+
     res.render('account.hbs',{
         title: 'ChatterBox',
         link: ['/chatroom','/logout'],
 
-        username: `${req.user.local.username}`,
-        email: `${req.user.local.email}`,
-        name: `${req.user.local.first_name + " " + req.user.local.last_name} `,
-        updateLink:['/account/update']
+        username: `${username}`,
+        email: `${email}`,
+        name: `${name} `,
+        updateLink:`${updatelink} `
 
     })
 });
+
 app.get('/account/update',(req,res)=>{
+    var username = req.user.local.username;
+    var email = req.user.local.email;
+    var first_name = req.user.local.first_name;
+    var last_name = req.user.local.last_name;
+
     res.render('update.hbs', {
         title: 'Update Account',
         h1: 'Update Account',
@@ -237,10 +278,10 @@ app.get('/account/update',(req,res)=>{
         box3: 'last_name',
         box4: 'password',
         box5: 'email',
-        username: `${req.user.local.username}`,
-        email: `${req.user.local.email}`,
-        first_name: `${req.user.local.first_name}`,
-        last_name: `${req.user.local.last_name}`,
+        username: `${username}`,
+        email: `${email}`,
+        first_name: `${first_name}`,
+        last_name: `${last_name}`,
         link: '/account',
         isError: 'false',
         error: ''
@@ -248,6 +289,12 @@ app.get('/account/update',(req,res)=>{
 });
 
 app.get('/account/update/exists', (req, res)=> {
+
+    var username = req.user.local.username;
+    var email = req.user.local.email;
+    var first_name = req.user.local.first_name;
+    var last_name = req.user.local.last_name;
+
     res.render('update.hbs', {
         title: 'Update Account',
         h1: 'Update Account',
@@ -256,10 +303,10 @@ app.get('/account/update/exists', (req, res)=> {
         box3: 'last_name',
         box4: 'password',
         box5: 'email',
-        username: `${req.user.local.username}`,
-        email: `${req.user.local.email}`,
-        first_name: `${req.user.local.first_name}`,
-        last_name: `${req.user.local.last_name}`,
+        username: `${username}`,
+        email: `${email}`,
+        first_name: `${first_name}`,
+        last_name: `${last_name}`,
         link: '/account',
         isError: 'true',
         error: 'User already exists.'
@@ -267,27 +314,29 @@ app.get('/account/update/exists', (req, res)=> {
 });
 
 app.post('/account/update-form', (req, res)=>{
-    var user = new User ({
-        local:{
-            username: req.body.username,
-            password: bcrypt.hashSync(req.body.password),
-            first_name: req.body.first_name,
-            last_name: req.body.last_name,
-            email: req.body.email,
-            registration_date: req.user.local.registration_date
-        }
-    });
     var first_name = req.body.first_name;
     var last_name = req.body.last_name;
     var email = req.body.email;
     var password = bcrypt.hashSync(req.body.password);
     var username = req.body.username;
 
-    mongoose.model('users').find({$or:[{'local.username':req.body.username},{'local.email':req.body.email}]},(err,doc)=>{
+    var user = new User ({
+        local:{
+            username: username,
+            password: password,
+            first_name: first_name,
+            last_name: last_name,
+            email: email,
+            registration_date: req.user.local.registration_date
+        }
+    });
+
+
+    mongoose.model('users').find({$or:[{'local.username':username},{'local.email':username}, {'facebook.username':username}]},(err,doc)=>{
         if (err){
             res.send('Unable to add user.');
         }
-        if (doc.length < 2){
+        if (doc.length===0 || doc[0]._id.equals(req.user._id)){
             mongoose.model('users').updateOne({_id: req.user._id}, {
                 $set:{
                     'local.username': username,
@@ -315,6 +364,129 @@ app.post('/account/update-form', (req, res)=>{
     });
 
 });
+
+app.get('/account/fb_update',(req,res)=>{
+    var username = req.user.facebook.username;
+    var email = 'Not available';
+    var first_name = req.user.facebook.first_name;
+    var last_name = req.user.facebook.last_name;
+
+    res.render('update_fb.hbs', {
+        title: 'Update Account',
+        h1: 'Update Account',
+        box1: 'username',
+        box2: 'first_name',
+        box3: 'last_name',
+        username: `${username}`,
+        first_name: `${first_name}`,
+        last_name: `${last_name}`,
+        link: '/account',
+        isError: 'false',
+        error: ''
+    });
+});
+
+app.get('/account/fb_update/exists', (req, res)=> {
+
+    var username = req.user.facebook.username;
+    var first_name = req.user.facebook.first_name;
+    var last_name = req.user.facebook.last_name;
+
+    res.render('update_fb.hbs', {
+        title: 'Update Account',
+        h1: 'Update Account',
+        box1: 'username',
+        box2: 'first_name',
+        box3: 'last_name',
+        username: `${username}`,
+        first_name: `${first_name}`,
+        last_name: `${last_name}`,
+        link: '/account',
+        isError: 'true',
+        error: 'User already exists.'
+    });
+});
+
+app.post('/account/update-form-fb', (req, res)=>{
+    var first_name = req.body.first_name;
+    var last_name = req.body.last_name;
+    var username = req.body.username;
+
+    var user = new User ({
+        facebook:{
+            id: req.user.facebook.id,
+            token: req.user.facebook.token,
+            first_name: first_name,
+            last_name: last_name,
+            username: username,
+            registration_date: req.user.facebook.registration_date
+        }
+    });
+
+
+    mongoose.model('users').find({$or:[{'local.username':username},{'facebook.username':username}]},(err,doc)=>{
+        if (doc.length===0 || doc[0]._id.equals(req.user._id)){
+            mongoose.model('users').updateOne({_id: req.user._id}, {
+                $set:{
+                    'facebook.username': username,
+                    'facebook.first_name': first_name,
+                    'facebook.last_name': last_name,
+                    'facebook.registration_date': req.user.facebook.registration_date
+                }
+            }, (err, doc)=>{
+                if(err) {
+                    res.send(err)
+                }else if(doc.ok===1){
+                    temp = req.user._id;
+                    req.user = user;
+                    req.user._id = temp;
+                    res.redirect('/account');
+
+                }
+            })
+        }else{
+            res.redirect('/account/fb_update/exists');
+        }
+
+    });
+
+});
+
+app.get('/logout', (req, res)=> {
+    var username;
+    if (req.user.local){
+        username = req.user.local.username;
+    }else if (req.user.facebook){
+        username = req.user.facebook.username;
+    }
+
+    var index = clients.indexOf(username);
+    if (index > -1) {
+        clients.splice(index, 1);
+    }
+    req.logout();
+    res.redirect("/");
+});
+
+app.get('/chatroom', ensureAuthenticated,(req, res)=> {
+    var username;
+    if (req.user.local.username){
+        username = req.user.local.username;
+        clients.push(username);
+    }
+    if (req.user.facebook.username){
+        username = req.user.facebook.username;
+        clients.push(username);
+    }
+
+    res.render('chat.hbs', {
+        title: 'ChatterBox',
+        page: 'Log out',
+        link: ['/logout','/account'],
+        username: `${username}`
+    });
+});
+
 
 
 var chatLog = [];
