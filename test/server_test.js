@@ -179,7 +179,7 @@ describe("SAMPLE unit test",function(){
     });
 //
     var agent = chai.request.agent("http://localhost:8080");
-    it("should log out", ()=> {
+    it("should log out", (done)=> {
         agent
             .post("/login")
             .send({_method: "post", username: "tester1", password: "Asdf1234"})
