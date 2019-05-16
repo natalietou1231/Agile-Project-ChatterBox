@@ -164,7 +164,6 @@ app.post('/signup', (req, res)=> {
 
 });
 
-<<<<<<< HEAD
 app.get('/logout', (req, res)=> {
     var index = clients.indexOf(req.user.local.username);
     if (index > -1) {
@@ -173,9 +172,7 @@ app.get('/logout', (req, res)=> {
     req.logout();
     res.redirect("/");
 });
-=======
 
->>>>>>> master
 
 // app.get('/aaa', (req, res)=>{
 //     mongoose.model('users').find({},(err,users)=>{
@@ -216,7 +213,7 @@ app.get('/profile/:username', function(req, res) {
     });
 });
 
-<<<<<<< HEAD
+
 app.get('/chatroom', ensureAuthenticated,(req, res)=> {
     clients.push(req.user.local.username);
     res.render('chat.hbs', {
@@ -235,10 +232,6 @@ app.get('/chatroom', ensureAuthenticated,(req, res)=> {
         });
 
 });
-
-=======
->>>>>>> master
-
 app.get('/account',(req,res)=> {
     if (req.user.local.username){
         var username = req.user.local.username;

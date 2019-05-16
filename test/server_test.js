@@ -43,7 +43,6 @@ describe("SAMPLE unit test",function(){
                 done();
             });
     });
-<<<<<<< HEAD
 
     it("should login to chatroom", (done)=>{
 
@@ -245,8 +244,7 @@ describe("SAMPLE unit test",function(){
     //             done();
     //         });
     // });
-=======
->>>>>>> master
+
 
     it("should login to chatroom", (done)=>{
 
