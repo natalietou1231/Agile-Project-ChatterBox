@@ -62,7 +62,7 @@ app.get('/', (req, res)=>{
         link1: 'Sign up',
         link2: 'Log in',
         link3: 'Facebook',
-        pages: ['/signup', '/login', '/auth/facebook']
+        pages: ['/signup', '/login']
     });
 });
 
@@ -72,7 +72,7 @@ app.get('/login', (req, res)=> {
         h1: 'Login',
         box1: 'username',
         box2: 'password',
-        pages: ['/signup',  '/'],
+        pages: ['/signup',  '/', '/auth/facebook'],
         isError: 'false',
         error: ''
     });
@@ -84,7 +84,7 @@ app.get('/login/incorrect', (req, res)=> {
         h1: 'Login',
         box1: 'username',
         box2: 'password',
-        pages: ['/signup',  '/'],
+        pages: ['/signup',  '/', '/auth/facebook'],
         isError: 'true',
         error: 'Incorrect login information.'
     });
@@ -114,7 +114,7 @@ app.get('/signup', (req, res)=> {
         box3: 'last_name',
         box4: 'password',
         box5: 'email',
-        pages: ['/login',  '/'],
+        pages: ['/login',  '/', '/auth/facebook'],
         isError: 'false',
         error: ''
     });
@@ -129,7 +129,7 @@ app.get('/signup/exists', (req, res)=> {
         box3: 'last_name',
         box4: 'password',
         box5: 'email',
-        pages: ['/login',  '/'],
+        pages: ['/login',  '/', '/auth/facebook'],
         isError: 'true',
         error: 'User already exists.'
     });
