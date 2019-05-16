@@ -62,7 +62,7 @@ app.get('/', (req, res)=>{
         link1: 'Sign up',
         link2: 'Log in',
         link3: 'Facebook',
-        pages: ['/signup', '/login', '/auth/facebook']
+        pages: ['/signup', '/login']
     });
 });
 
@@ -72,7 +72,7 @@ app.get('/login', (req, res)=> {
         h1: 'Login',
         box1: 'username',
         box2: 'password',
-        pages: ['/signup',  '/'],
+        pages: ['/signup',  '/', '/auth/facebook'],
         isError: 'false',
         error: ''
     });
@@ -84,7 +84,7 @@ app.get('/login/incorrect', (req, res)=> {
         h1: 'Login',
         box1: 'username',
         box2: 'password',
-        pages: ['/signup',  '/'],
+        pages: ['/signup',  '/', '/auth/facebook'],
         isError: 'true',
         error: 'Incorrect login information.'
     });
@@ -114,7 +114,7 @@ app.get('/signup', (req, res)=> {
         box3: 'last_name',
         box4: 'password',
         box5: 'email',
-        pages: ['/login',  '/'],
+        pages: ['/login',  '/', '/auth/facebook'],
         isError: 'false',
         error: ''
     });
@@ -129,7 +129,7 @@ app.get('/signup/exists', (req, res)=> {
         box3: 'last_name',
         box4: 'password',
         box5: 'email',
-        pages: ['/login',  '/'],
+        pages: ['/login',  '/', '/auth/facebook'],
         isError: 'true',
         error: 'User already exists.'
     });
@@ -164,14 +164,6 @@ app.post('/signup', (req, res)=> {
 
 });
 
-app.get('/logout', (req, res)=> {
-    var index = clients.indexOf(req.user.local.username);
-    if (index > -1) {
-        clients.splice(index, 1);
-    }
-    req.logout();
-    res.redirect("/");
-});
 
 
 // app.get('/aaa', (req, res)=>{
@@ -214,24 +206,6 @@ app.get('/profile/:username', function(req, res) {
 });
 
 
-app.get('/chatroom', ensureAuthenticated,(req, res)=> {
-    clients.push(req.user.local.username);
-    res.render('chat.hbs', {
-        title: 'ChatterBox',
-        page: 'Log out',
-        link: ['/logout','/account'],
-        username: `${req.user.local.username}`
-    });
-        console.log(Object.keys(req.user));
-        clients.push(req.user.local.username);
-        res.render('chat.hbs', {
-            title: 'ChatterBox',
-            page: 'Log out',
-            link: ['/logout','/account'],
-            username: `${req.user.local.username}`
-        });
-
-});
 app.get('/account',(req,res)=> {
     if (req.user.local.username){
         var username = req.user.local.username;
@@ -348,6 +322,7 @@ app.post('/account/update-form', (req, res)=>{
                     req.user = user;
                     req.user._id = temp;
                     res.redirect('/account');
+
                 }
             })
         }else{
