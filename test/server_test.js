@@ -44,6 +44,7 @@ describe("SAMPLE unit test",function(){
             });
     });
 
+
     it("should login to chatroom", (done)=>{
 
         chai.request("http://localhost:8080")
@@ -129,6 +130,7 @@ describe("SAMPLE unit test",function(){
     });
 //     /* ---------------------------Deliverable 1 Tests----------------*/
 
+
     var agent = chai.request.agent("http://localhost:8080");
     it("should get user account information", (done)=>{
         agent
@@ -163,6 +165,7 @@ describe("SAMPLE unit test",function(){
                         return agent.get('/account')
                             .then(function (res) {
                                 expect(res).to.have.status(200);
+
                                 // assert.equal(res.body.user[0].username,'www111');
                                 // assert.equal(res.body.user[0].name,'OliviaOlivia');
                                 // assert.equal(res.body.user[0].email,'2@gmail.com');
@@ -174,9 +177,9 @@ describe("SAMPLE unit test",function(){
 
             })
     });
-
+//
     var agent = chai.request.agent("http://localhost:8080");
-    it("should log out", (done)=> {
+    it("should log out", ()=> {
         agent
             .post("/login")
             .send({_method: "post", username: "tester1", password: "Asdf1234"})
@@ -209,6 +212,7 @@ describe("SAMPLE unit test",function(){
                         return agent.get('/account')
                             .then(function (res) {
                                 expect(res).to.have.status(200);
+
                                 done()
                             });
                     })
