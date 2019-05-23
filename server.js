@@ -45,7 +45,7 @@ hbs.registerPartials(__dirname + '/views/partials');
 hbs.registerHelper('getCurrentYear', ()=>{
     return today.getFullYear();
 });
-
+// face book authentication assurance
 var ensureAuthenticated =(req, res, next)=>{
     if(req.isAuthenticated()){
         next();
@@ -54,7 +54,7 @@ var ensureAuthenticated =(req, res, next)=>{
     }
 
 };
-
+// home page endpoints
 app.get('/', (req, res)=>{
     res.render('index.hbs', {
         title: 'Home page',
@@ -65,7 +65,7 @@ app.get('/', (req, res)=>{
         pages: ['/signup', '/login']
     });
 });
-
+// login endpoints
 app.get('/login', (req, res)=> {
     res.render('login.hbs', {
         title: 'Login',
@@ -97,7 +97,7 @@ app.post('/login', (req, res, next)=> {
     })(req, res, next);
 });
 
-
+//facebook authentication endpoints
 app.get('/auth/facebook', passport.authenticate('facebook'));
 
 app.get('/auth/facebook/callback',
@@ -105,6 +105,7 @@ app.get('/auth/facebook/callback',
         successRedirect: '/chatroom',
         failureRedirect: '/' }));
 
+//sign up endpoints
 app.get('/signup', (req, res)=> {
     res.render('signup.hbs', {
         title: 'Sign up',
@@ -166,12 +167,7 @@ app.post('/signup', (req, res)=> {
 
 
 
-// app.get('/aaa', (req, res)=>{
-//     mongoose.model('users').find({},(err,users)=>{
-//         res.send(users);
-//     });
-// });
-
+//porfile page endpoints
 app.get('/profile/:username', function(req, res) {
     mongoose.model('users').find({'local.username': req.params.username},(err,user)=>{
         if (err) {
@@ -205,7 +201,7 @@ app.get('/profile/:username', function(req, res) {
     });
 });
 
-
+//account page endpoints
 app.get('/account',(req,res)=> {
     if (req.user.local.username){
         var username = req.user.local.username;
@@ -280,6 +276,7 @@ app.get('/account/update/exists', (req, res)=> {
     });
 });
 
+//account update profile endpoints
 app.post('/account/update-form', (req, res)=>{
     var first_name = req.body.first_name;
     var last_name = req.body.last_name;
@@ -436,6 +433,7 @@ app.get('/logout', (req, res)=> {
     res.redirect("/");
 });
 
+//chatroom page endpoints
 app.get('/chatroom', ensureAuthenticated,(req, res)=> {
     var username;
     if (req.user.local.username){
