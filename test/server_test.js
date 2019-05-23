@@ -147,7 +147,7 @@ describe("SAMPLE unit test",function(){
 
             })
     });
-//
+
     var agent = chai.request.agent("http://localhost:8080");
     it("should log out", (done)=> {
         agent
@@ -196,10 +196,6 @@ describe("SAMPLE unit test",function(){
                         expect(res).to.have.status(200);
                         done();
                     })
-                    // .catch(function(err){
-                    //     console.log(err)
-                    //     done()
-                    // })
             })
     });
 

@@ -23,29 +23,34 @@ require('./passport')(passport);
 // hbs
 app.set('view engine', 'hbs');
 
-// Express body parser
+
+//     /* ---------------------------// Express body parser----------------*/
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(cookieParser('thesecret'));
 
-// Express session
+
+//     /* ---------------------------// Express session----------------*/
 app.use(session({
     secret: 'thesecret',
     saveUninitialized: true,
     resave: true
 }));
 
-// Passport middleware
+
+//     /* ---------------------------// Passport middleware----------------*/
 app.use(passport.initialize());
 app.use(passport.session());
 
-//hbs partials
+
+//     /* ---------------------------//hbs partials----------------*/
 hbs.registerPartials(__dirname + '/views/partials');
 hbs.registerHelper('getCurrentYear', ()=>{
     return today.getFullYear();
 });
-// face book authentication assurance
+
+//     /* ---------------------------face book authentication assurance----------------*/
 var ensureAuthenticated =(req, res, next)=>{
     if(req.isAuthenticated()){
         next();
@@ -54,7 +59,8 @@ var ensureAuthenticated =(req, res, next)=>{
     }
 
 };
-// home page endpoints
+
+//     /* ---------------------------Home page endpoints----------------*/
 app.get('/', (req, res)=>{
     res.render('index.hbs', {
         title: 'Home page',
@@ -65,7 +71,9 @@ app.get('/', (req, res)=>{
         pages: ['/signup', '/login']
     });
 });
-// login endpoints
+
+
+//     /* ---------------------------login endpoints----------------*/
 app.get('/login', (req, res)=> {
     res.render('login.hbs', {
         title: 'Login',
@@ -97,7 +105,8 @@ app.post('/login', (req, res, next)=> {
     })(req, res, next);
 });
 
-//facebook authentication endpoints
+
+//     /* ---------------------------facebook authentication endpoints----------------*/
 app.get('/auth/facebook', passport.authenticate('facebook'));
 
 app.get('/auth/facebook/callback',
@@ -105,7 +114,8 @@ app.get('/auth/facebook/callback',
         successRedirect: '/chatroom',
         failureRedirect: '/' }));
 
-//sign up endpoints
+
+//     /* ---------------------------sign up endpoints----------------*/
 app.get('/signup', (req, res)=> {
     res.render('signup.hbs', {
         title: 'Sign up',
@@ -167,7 +177,8 @@ app.post('/signup', (req, res)=> {
 
 
 
-//porfile page endpoints
+
+//     /* ---------------------------profile page endpoints----------------*/
 app.get('/profile/:username', function(req, res) {
     mongoose.model('users').find({'local.username': req.params.username},(err,user)=>{
         if (err) {
@@ -201,7 +212,8 @@ app.get('/profile/:username', function(req, res) {
     });
 });
 
-//account page endpoints
+
+//     /* ---------------------------account page endpoints----------------*/
 app.get('/account',(req,res)=> {
     if (req.user.local.username){
         var username = req.user.local.username;
@@ -276,7 +288,8 @@ app.get('/account/update/exists', (req, res)=> {
     });
 });
 
-//account update profile endpoints
+
+//     /* ---------------------------account update profile endpoints----------------*/
 app.post('/account/update-form', (req, res)=>{
     var first_name = req.body.first_name;
     var last_name = req.body.last_name;
@@ -433,7 +446,8 @@ app.get('/logout', (req, res)=> {
     res.redirect("/");
 });
 
-//chatroom page endpoints
+
+//     /* ---------------------------//chatroom page endpoints----------------*/
 app.get('/chatroom', ensureAuthenticated,(req, res)=> {
     var username;
     if (req.user.local.username){
