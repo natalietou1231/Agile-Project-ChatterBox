@@ -4,8 +4,7 @@ const assert = require('chai').assert;
 const chaiHttp = require('chai-http');
 const should = chai.should();
 const mongoose = require('mongoose');
-// const app = require('../server');
-// const request = require("supertest");
+
 
 
 chai.use(chaiHttp);
@@ -38,7 +37,6 @@ describe("SAMPLE unit test",function(){
             .post("/login")
             .send({_method: "post", username: "wrong-account", password:"Kucing07!"})
             .end((err,res)=>{
-                // should.exist(res.body);
                 res.should.redirectTo("http://localhost:8080/login/incorrect");
                 done();
             });
@@ -56,27 +54,6 @@ describe("SAMPLE unit test",function(){
                 done();
             });
     });
-
-    //
-    // it("should sign up a user", (done)=>{
-    //     let json ={};
-    //     json.username= "zxcvbnmz";
-    //     json.password = "11111Rf";
-    //     json.first_name = "aaa";
-    //     json.last_name = "ddd";
-    //     json.email = "111@gmail.comqqq";
-    //     json.registration_date = new Date();
-    //
-    //     chai.request("http://localhost:8080")
-    //         .post("/signup")
-    //         .send(json)
-    //         .end((err,res)=>{
-    //             should.exist(res.body);
-    //             res.should.redirectTo("http://localhost:8080/login");
-    //             done();
-    //         });
-    //
-    // });
     it("should not create user if email exists", (done)=>{
         let json ={};
         json.username= "zxcvbnmz";
@@ -130,7 +107,6 @@ describe("SAMPLE unit test",function(){
     });
 //     /* ---------------------------Deliverable 1 Tests----------------*/
 
-
     var agent = chai.request.agent("http://localhost:8080");
     it("should get user account information", (done)=>{
         agent
@@ -139,7 +115,6 @@ describe("SAMPLE unit test",function(){
 
 
             .then(function(){
-                // res.should.have.cookie('sessionid');
                 return agent.get('/account')
                     .then(function (res) {
                         expect(res).to.have.status(200);
@@ -165,11 +140,6 @@ describe("SAMPLE unit test",function(){
                         return agent.get('/account')
                             .then(function (res) {
                                 expect(res).to.have.status(200);
-
-                                // assert.equal(res.body.user[0].username,'www111');
-                                // assert.equal(res.body.user[0].name,'OliviaOlivia');
-                                // assert.equal(res.body.user[0].email,'2@gmail.com');
-                                // console.log(res.text);
                                 done()
                             });
 
@@ -186,8 +156,6 @@ describe("SAMPLE unit test",function(){
             .then(() => {
                 return agent.get('/logout')
                     .then((err, res) => {
-                        // console.log(err);
-                        // expect(res).to.have.status(200);
                         err.should.redirectTo("http://localhost:8080/");
                         done()
                     });
@@ -222,11 +190,7 @@ describe("SAMPLE unit test",function(){
     it("should be able to sign in with facebook", (done)=>{
         brows
             .get("/auth/facebook")
-            // .send({email: "tester_nuqpmiv_one@tfbnw.net", password:"111111Rf"})
             .then(function(){
-                // res.should.redirectTo("https://afternoon-mesa-87220.herokuapp.com/chatroom");
-                // done();
-                // res.should.have.cookie('sessionid');
                 return brows.get('chatroom')
                     .then(function (res, err) {
                         expect(res).to.have.status(200);
