@@ -16,17 +16,17 @@ Working with a group of four to extend the functionalities of our chatroom app.
 <b>Methodology</b>
 - Node.js\
   Passport (local and facebook)\
-  HBS\ 
-  Express\ 
+  HBS\
+  Express\
   Mongoose\
-  Body-parser\ 
+  Body-parser\
   Bcrypt\
   Chai\
   Mocha
 - Socket.io
 - MongoDB
 - Heroku
-- Test Driven Development
+- Test Driven Development\
   TravisCI
-- Project Tracking
+- Project Tracking\
 	Trello
