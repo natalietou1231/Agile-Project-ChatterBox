@@ -9,16 +9,16 @@ const bcrypt = require('bcrypt-nodejs');
 
 const port = process.env.PORT || 8080;
 
-var utils = require('./utils');
+var utils = require('./config/database');
 var msgs = require('./messages');
-var User = require('./model');
+var User = require('./config/model');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var today = new Date();
 var clients = [];
 
-require('./passport')(passport);
+require('./config/passport')(passport);
 
 // hbs
 app.set('view engine', 'hbs');
