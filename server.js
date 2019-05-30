@@ -9,7 +9,7 @@ const bcrypt = require('bcrypt-nodejs');
 
 const port = process.env.PORT || 8080;
 
-var utils = require('./config/database');
+var database = require('./config/database');
 var msgs = require('./messages');
 var User = require('./config/model');
 var app = express();
@@ -24,14 +24,14 @@ require('./config/passport')(passport);
 app.set('view engine', 'hbs');
 
 
-//     /* ---------------------------// Express body parser----------------*/
+/* ---------------------------// Express body parser----------------*/
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(cookieParser('thesecret'));
 
 
-//     /* ---------------------------// Express session----------------*/
+/* ---------------------------// Express session----------------*/
 app.use(session({
     secret: 'thesecret',
     saveUninitialized: true,
@@ -39,18 +39,18 @@ app.use(session({
 }));
 
 
-//     /* ---------------------------// Passport middleware----------------*/
+/* ---------------------------// Passport middleware----------------*/
 app.use(passport.initialize());
 app.use(passport.session());
 
 
-//     /* ---------------------------//hbs partials----------------*/
+/* ---------------------------//hbs partials----------------*/
 hbs.registerPartials(__dirname + '/views/partials');
 hbs.registerHelper('getCurrentYear', ()=>{
     return today.getFullYear();
 });
 
-//     /* ---------------------------face book authentication assurance----------------*/
+/* ---------------------------face book authentication assurance----------------*/
 var ensureAuthenticated =(req, res, next)=>{
     if(req.isAuthenticated()){
         next();
@@ -60,7 +60,7 @@ var ensureAuthenticated =(req, res, next)=>{
 
 };
 
-//     /* ---------------------------Home page endpoints----------------*/
+/* ---------------------------Home page endpoints----------------*/
 app.get('/', (req, res)=>{
     res.render('index.hbs', {
         title: 'Home page',
@@ -73,7 +73,7 @@ app.get('/', (req, res)=>{
 });
 
 
-//     /* ---------------------------login endpoints----------------*/
+/* ---------------------------login endpoints----------------*/
 app.get('/login', (req, res)=> {
     res.render('login.hbs', {
         title: 'Login',
@@ -105,8 +105,7 @@ app.post('/login', (req, res, next)=> {
     })(req, res, next);
 });
 
-
-//     /* ---------------------------facebook authentication endpoints----------------*/
+/* ---------------------------facebook authentication endpoints----------------*/
 app.get('/auth/facebook', passport.authenticate('facebook'));
 
 app.get('/auth/facebook/callback',
@@ -115,7 +114,7 @@ app.get('/auth/facebook/callback',
         failureRedirect: '/' }));
 
 
-//     /* ---------------------------sign up endpoints----------------*/
+/* ---------------------------sign up endpoints----------------*/
 app.get('/signup', (req, res)=> {
     res.render('signup.hbs', {
         title: 'Sign up',
@@ -178,7 +177,7 @@ app.post('/signup', (req, res)=> {
 
 
 
-//     /* ---------------------------profile page endpoints----------------*/
+/* ---------------------------profile page endpoints----------------*/
 app.get('/profile/:username', function(req, res) {
     mongoose.model('users').find({'local.username': req.params.username},(err,user)=>{
         if (err) {
@@ -213,7 +212,7 @@ app.get('/profile/:username', function(req, res) {
 });
 
 
-//     /* ---------------------------account page endpoints----------------*/
+/* ---------------------------local user account page endpoints----------------*/
 app.get('/account',(req,res)=> {
     if (req.user.local.username){
         var username = req.user.local.username;
@@ -289,7 +288,7 @@ app.get('/account/update/exists', (req, res)=> {
 });
 
 
-//     /* ---------------------------account update profile endpoints----------------*/
+/* ---------------------------local user account update profile endpoints----------------*/
 app.post('/account/update-form', (req, res)=>{
     var first_name = req.body.first_name;
     var last_name = req.body.last_name;
@@ -343,6 +342,7 @@ app.post('/account/update-form', (req, res)=>{
 
 });
 
+/* ---------------------------facebook user account page endpoints----------------*/
 app.get('/account/fb_update',(req,res)=>{
     var username = req.user.facebook.username;
     var email = 'Not available';
@@ -385,6 +385,7 @@ app.get('/account/fb_update/exists', (req, res)=> {
     });
 });
 
+/* ---------------------------facebook user account update profile endpoints----------------*/
 app.post('/account/update-form-fb', (req, res)=>{
     var first_name = req.body.first_name;
     var last_name = req.body.last_name;
@@ -430,6 +431,7 @@ app.post('/account/update-form-fb', (req, res)=>{
 
 });
 
+/* ---------------------------logout endpoints----------------*/
 app.get('/logout', (req, res)=> {
     var username;
     if (req.user.local){
@@ -447,7 +449,7 @@ app.get('/logout', (req, res)=> {
 });
 
 
-//     /* ---------------------------//chatroom page endpoints----------------*/
+/* ---------------------------//chatroom page endpoints----------------*/
 app.get('/chatroom', ensureAuthenticated,(req, res)=> {
     var username;
     if (req.user.local.username){
@@ -533,7 +535,7 @@ chat.on('connection', (socket) => {
 
 http.listen(port, ()=>{
     console.log('Server is up on the port 8080');
-    utils.init();
+    database.init();
 });
 
 
