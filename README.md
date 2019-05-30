@@ -14,15 +14,15 @@ Working with a group of four to extend the functionalities of our chatroom app.
 - User profile
 
 <b>Methodology</b>
-- Node.js 
-  Passport (local and facebook)
-  HBS 
-  Express 
-  Mongoose
-  Body-parser 
-  Bcrypt
-  Chai
-  mocha
+- Node.js\
+  Passport (local and facebook)\
+  HBS\ 
+  Express\ 
+  Mongoose\
+  Body-parser\ 
+  Bcrypt\
+  Chai\
+  Mocha
 - Socket.io
 - MongoDB
 - Heroku
