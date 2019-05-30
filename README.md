@@ -1,7 +1,7 @@
 # Agile Project Term - ChatterBox Web App
 https://agile-chatterbox.herokuapp.com/
 
-Working with a group of four to extend the functionalities of our chatroom app.
+Working with a team of four to extend the functionalities of our chatroom app.
 
 <b>New features includes: </b>
 - Build-in emojis
